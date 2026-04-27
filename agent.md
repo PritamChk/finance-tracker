@@ -4,8 +4,10 @@
 FinanceTrackerApp design system showcase. HTML component library based on color-scheme.md.
 
 ## Key Files
-- `color-scheme.md` - Full design system (colors, spacing, components, conventions)
-- `component-showcase.html` - Live demo of all components
+- `planning/color-scheme.md` - Full design system (colors, spacing, components, conventions)
+- `planning/component-showcase.html` - Live demo of all components
+- `planning/progress.md` - Development progress tracker
+- `README.md` - Project overview and setup
 
 ## Design System Specs
 - Primary: Blue (#3b82f6)
@@ -34,4 +36,4 @@ FinanceTrackerApp design system showcase. HTML component library based on color-
 - CSS classes: kebab-case (.transaction-card)
 
 ## Quick Start
-Open `component-showcase.html` in browser. Toggle dark mode with button in top-right.
+Open `planning/component-showcase.html` in browser. Toggle dark mode with button in top-right.
