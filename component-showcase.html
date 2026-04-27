@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Showcase - FinanceTrackerApp</title>
+  <style>
+    :root {
+      /* Primary Colors */
+      --primary-50:  #eff6ff;
+      --primary-100: #dbeafe;
+      --primary-200: #bfdbfe;
+      --primary-300: #93c5fd;
+      --primary-400: #60a5fa;
+      --primary-500: #3b82f6;
+      --primary-600: #2563eb;
+      --primary-700: #1d4ed8;
+      --primary-800: #1e40af;
+      --primary-900: #1e3a8a;
+
+      /* Success Colors */
+      --success-50:  #f0fdf4;
+      --success-100: #dcfce7;
+      --success-200: #bbf7d0;
+      --success-300: #86efac;
+      --success-400: #4ade80;
+      --success-500: #22c55e;
+      --success-600: #16a34a;
+      --success-700: #15803d;
+      --success-800: #166534;
+      --success-900: #14532d;
+
+      /* Danger Colors */
+      --danger-50:  #fef2f2;
+      --danger-100: #fee2e2;
+      --danger-200: #fecaca;
+      --danger-300: #fca5a5;
+      --danger-400: #f87171;
+      --danger-500: #ef4444;
+      --danger-600: #dc2626;
+      --danger-700: #b91c1c;
+      --danger-800: #991b1b;
+      --danger-900: #7f1d1d;
+
+      /* Warning Colors */
+      --warning-50:  #fffbeb;
+      --warning-100: #fef3c7;
+      --warning-200: #fde68a;
+      --warning-300: #fcd34d;
+      --warning-400: #fbbf24;
+      --warning-500: #f59e0b;
+      --warning-600: #d97706;
+      --warning-700: #b45309;
+      --warning-800: #92400e;
+      --warning-900: #78350f;
+
+      /* Info Colors */
+      --info-50:  #eff6ff;
+      --info-100: #dbeafe;
+      --info-200: #bfdbfe;
+      --info-300: #93c5fd;
+      --info-400: #60a5fa;
+      --info-500: #3b82f6;
+      --info-600: #2563eb;
+      --info-700: #1d4ed8;
+      --info-800: #1e40af;
+      --info-900: #1e3a8a;
+
+      /* Gray Colors */
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+
+      /* Chart Colors */
+      --chart-1:  #3b82f6;
+      --chart-2:  #22c55e;
+      --chart-3:  #f59e0b;
+      --chart-4:  #ef4444;
+      --chart-5:  #8b5cf6;
+      --chart-6:  #ec4899;
+      --chart-7:  #06b6d4;
+      --chart-8:  #84cc16;
+      --chart-9:  #f97316;
+      --chart-10: #6366f1;
+
+      /* Dark Mode Colors */
+      --dark-bg-primary:   #0f172a;
+      --dark-bg-secondary: #1e293b;
+      --dark-bg-tertiary:  #334155;
+      --dark-text-primary:   #f8fafc;
+      --dark-text-secondary: #cbd5e1;
+      --dark-text-tertiary:  #94a3b8;
+
+      /* Spacing */
+      --space-0:  0;
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-5:  20px;
+      --space-6:  24px;
+      --space-8:  32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-16: 64px;
+      --space-20: 80px;
+      --space-24: 96px;
+
+      /* Border Radius */
+      --radius-sm:  4px;
+      --radius-md:  8px;
+      --radius-lg:  12px;
+      --radius-xl:  16px;
+      --radius-full: 9999px;
+
+      /* Font Sizes */
+      --text-xs:   0.75rem;
+      --text-sm:   0.875rem;
+      --text-base: 1rem;
+      --text-lg:   1.125rem;
+      --text-xl:   1.25rem;
+      --text-2xl:  1.5rem;
+      --text-3xl:  1.875rem;
+      --text-4xl:  2.25rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      line-height: 1.5;
+      padding: var(--space-8);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: var(--text-4xl);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+      color: var(--gray-900);
+    }
+
+    h2 {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      margin: var(--space-8) 0 var(--space-4);
+      color: var(--gray-800);
+      border-bottom: 2px solid var(--gray-200);
+      padding-bottom: var(--space-2);
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin: var(--space-6) 0 var(--space-3);
+      color: var(--gray-700);
+    }
+
+    .section {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      margin-bottom: var(--space-6);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Color Swatches */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: var(--space-3);
+    }
+
+    .color-swatch {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+    }
+
+    .color-box {
+      height: 80px;
+      width: 100%;
+    }
+
+    .color-info {
+      padding: var(--space-2);
+      font-size: var(--text-xs);
+      background: white;
+    }
+
+    .color-name {
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .color-hex {
+      color: var(--gray-500);
+      font-family: monospace;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: var(--space-2);
+      margin-bottom: var(--space-2);
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary-500);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--gray-200);
+      color: var(--gray-900);
+    }
+
+    .btn-success {
+      background: var(--success-500);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger-500);
+      color: white;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--primary-500);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary-500);
+      border: 1px solid var(--primary-500);
+    }
+
+    .btn-sm {
+      height: 32px;
+      padding: 0 var(--space-3);
+      font-size: var(--text-sm);
+    }
+
+    .btn-md {
+      height: 40px;
+      padding: 0 var(--space-4);
+      font-size: var(--text-base);
+    }
+
+    .btn-lg {
+      height: 48px;
+      padding: 0 var(--space-6);
+      font-size: var(--text-lg);
+    }
+
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: var(--space-6);
+      margin-bottom: var(--space-4);
+    }
+
+    .card-hover:hover {
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-4);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-3);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      margin-right: var(--space-2);
+    }
+
+    .badge-income {
+      background: var(--success-100);
+      color: var(--success-700);
+    }
+
+    .badge-expense {
+      background: var(--danger-100);
+      color: var(--danger-700);
+    }
+
+    .badge-warning {
+      background: var(--warning-100);
+      color: var(--warning-700);
+    }
+
+    .badge-info {
+      background: var(--info-100);
+      color: var(--info-700);
+    }
+
+    /* Progress Bars */
+    .progress-bar {
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: var(--gray-200);
+      margin-bottom: var(--space-3);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.3s ease;
+    }
+
+    .progress-success {
+      background: var(--success-500);
+    }
+
+    .progress-warning {
+      background: var(--warning-500);
+    }
+
+    .progress-danger {
+      background: var(--danger-500);
+    }
+
+    .progress-primary {
+      background: var(--primary-500);
+    }
+
+    /* Tables */
+    .table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: var(--space-4);
+    }
+
+    .table th,
+    .table td {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .table th {
+      background: var(--gray-50);
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .table tr:hover {
+      background: var(--gray-50);
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+
+    .label {
+      display: block;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: var(--space-2);
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-base);
+      transition: border-color 0.2s;
+    }
+
+    .input:focus {
+      border-color: var(--primary-500);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+
+    .input-error {
+      border-color: var(--danger-500);
+    }
+
+    .input-sm {
+      height: 32px;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-sm);
+    }
+
+    .input-lg {
+      height: 48px;
+      padding: var(--space-3) var(--space-6);
+      font-size: var(--text-lg);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 25px rgba(0,0,0,0.1);
+      max-width: 500px;
+      width: 90%;
+      padding: var(--space-6);
+    }
+
+    .modal-header {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+    }
+
+    .modal-body {
+      color: var(--gray-600);
+      margin-bottom: var(--space-6);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--space-2);
+    }
+
+    /* Chart Colors */
+    .chart-colors {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .chart-swatch {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: var(--text-xs);
+      font-weight: 600;
+    }
+
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      background: var(--gray-800);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-xl);
+      transition: all 0.3s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--gray-700);
+    }
+
+    /* Dark Mode */
+    [data-theme="dark"] body {
+      background: var(--dark-bg-primary);
+      color: var(--dark-text-primary);
+    }
+
+    [data-theme="dark"] h1,
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h3 {
+      color: var(--dark-text-primary);
+    }
+
+    [data-theme="dark"] .section {
+      background: var(--dark-bg-secondary);
+    }
+
+    [data-theme="dark"] .card {
+      background: var(--dark-bg-secondary);
+    }
+
+    [data-theme="dark"] .color-info {
+      background: var(--dark-bg-secondary);
+    }
+
+    [data-theme="dark"] .color-name {
+      color: var(--dark-text-primary);
+    }
+
+    [data-theme="dark"] .color-hex {
+      color: var(--dark-text-tertiary);
+    }
+
+    [data-theme="dark"] .input {
+      background: var(--dark-bg-tertiary);
+      border-color: var(--gray-700);
+      color: var(--dark-text-primary);
+    }
+
+    [data-theme="dark"] .table th {
+      background: var(--dark-bg-tertiary);
+      color: var(--dark-text-primary);
+    }
+
+    [data-theme="dark"] .table td {
+      border-color: var(--gray-700);
+    }
+
+    [data-theme="dark"] .table tr:hover {
+      background: var(--dark-bg-tertiary);
+    }
+
+    [data-theme="dark"] .label {
+      color: var(--dark-text-primary);
+    }
+
+    [data-theme="dark"] .modal-content {
+      background: var(--dark-bg-secondary);
+    }
+
+    [data-theme="dark"] .modal-body {
+      color: var(--dark-text-secondary);
+    }
+
+    /* Demo Grid */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .demo-item {
+      padding: var(--space-4);
+      background: var(--gray-50);
+      border-radius: var(--radius-md);
+    }
+
+    [data-theme="dark"] .demo-item {
+      background: var(--dark-bg-tertiary);
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
+
+  <div class="container">
+    <h1>Component Showcase</h1>
+    <p style="color: var(--gray-600); margin-bottom: var(--space-6);">FinanceTrackerApp Design System</p>
+
+    <!-- Primary Colors -->
+    <div class="section">
+      <h2>Primary Colors</h2>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-50);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 50</div>
+            <div class="color-hex">#eff6ff</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-100);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 100</div>
+            <div class="color-hex">#dbeafe</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-200);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 200</div>
+            <div class="color-hex">#bfdbfe</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-300);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 300</div>
+            <div class="color-hex">#93c5fd</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-400);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 400</div>
+            <div class="color-hex">#60a5fa</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-500);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 500</div>
+            <div class="color-hex">#3b82f6</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-600);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 600</div>
+            <div class="color-hex">#2563eb</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-700);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 700</div>
+            <div class="color-hex">#1d4ed8</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-800);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 800</div>
+            <div class="color-hex">#1e40af</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--primary-900);"></div>
+          <div class="color-info">
+            <div class="color-name">Primary 900</div>
+            <div class="color-hex">#1e3a8a</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Semantic Colors -->
+    <div class="section">
+      <h2>Semantic Colors</h2>
+      <h3>Success (Income)</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--success-100);"></div>
+          <div class="color-info">
+            <div class="color-name">Success 100</div>
+            <div class="color-hex">#dcfce7</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--success-500);"></div>
+          <div class="color-info">
+            <div class="color-name">Success 500</div>
+            <div class="color-hex">#22c55e</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--success-700);"></div>
+          <div class="color-info">
+            <div class="color-name">Success 700</div>
+            <div class="color-hex">#15803d</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Danger (Expense)</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--danger-100);"></div>
+          <div class="color-info">
+            <div class="color-name">Danger 100</div>
+            <div class="color-hex">#fee2e2</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--danger-500);"></div>
+          <div class="color-info">
+            <div class="color-name">Danger 500</div>
+            <div class="color-hex">#ef4444</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--danger-700);"></div>
+          <div class="color-info">
+            <div class="color-name">Danger 700</div>
+            <div class="color-hex">#b91c1c</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Warning</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--warning-100);"></div>
+          <div class="color-info">
+            <div class="color-name">Warning 100</div>
+            <div class="color-hex">#fef3c7</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--warning-500);"></div>
+          <div class="color-info">
+            <div class="color-name">Warning 500</div>
+            <div class="color-hex">#f59e0b</div>
+          </div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-box" style="background: var(--warning-700);"></div>
+          <div class="color-info">
+            <div class="color-name">Warning 700</div>
+            <div class="color-hex">#b45309</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Colors -->
+    <div class="section">
+      <h2>Chart Colors</h2>
+      <div class="chart-colors">
+        <div class="chart-swatch" style="background: var(--chart-1);">1</div>
+        <div class="chart-swatch" style="background: var(--chart-2);">2</div>
+        <div class="chart-swatch" style="background: var(--chart-3);">3</div>
+        <div class="chart-swatch" style="background: var(--chart-4);">4</div>
+        <div class="chart-swatch" style="background: var(--chart-5);">5</div>
+        <div class="chart-swatch" style="background: var(--chart-6);">6</div>
+        <div class="chart-swatch" style="background: var(--chart-7);">7</div>
+        <div class="chart-swatch" style="background: var(--chart-8);">8</div>
+        <div class="chart-swatch" style="background: var(--chart-9);">9</div>
+        <div class="chart-swatch" style="background: var(--chart-10);">10</div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="section">
+      <h2>Buttons</h2>
+      <h3>Variants</h3>
+      <div>
+        <button class="btn btn-primary btn-md">Primary</button>
+        <button class="btn btn-secondary btn-md">Secondary</button>
+        <button class="btn btn-success btn-md">Success</button>
+        <button class="btn btn-danger btn-md">Danger</button>
+        <button class="btn btn-ghost btn-md">Ghost</button>
+        <button class="btn btn-outline btn-md">Outline</button>
+      </div>
+
+      <h3>Sizes</h3>
+      <div>
+        <button class="btn btn-primary btn-sm">Small</button>
+        <button class="btn btn-primary btn-md">Medium</button>
+        <button class="btn btn-primary btn-lg">Large</button>
+      </div>
+
+      <h3>States</h3>
+      <div>
+        <button class="btn btn-primary btn-md">Normal</button>
+        <button class="btn btn-primary btn-md" disabled>Disabled</button>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="section">
+      <h2>Badges</h2>
+      <div>
+        <span class="badge badge-income">Income</span>
+        <span class="badge badge-expense">Expense</span>
+        <span class="badge badge-warning">Warning</span>
+        <span class="badge badge-info">Info</span>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="section">
+      <h2>Cards</h2>
+      <div class="card-grid">
+        <div class="card card-hover">
+          <h3 style="margin-top: 0;">Total Balance</h3>
+          <p style="font-size: var(--text-2xl); font-weight: 700; color: var(--primary-600);">$12,450.00</p>
+          <p style="color: var(--success-600); font-size: var(--text-sm);">+5.2% from last month</p>
+        </div>
+        <div class="card card-hover">
+          <h3 style="margin-top: 0;">Monthly Income</h3>
+          <p style="font-size: var(--text-2xl); font-weight: 700; color: var(--success-600);">$8,320.00</p>
+          <p style="color: var(--gray-500); font-size: var(--text-sm);">12 transactions</p>
+        </div>
+        <div class="card card-hover">
+          <h3 style="margin-top: 0;">Monthly Expenses</h3>
+          <p style="font-size: var(--text-2xl); font-weight: 700; color: var(--danger-600);">$4,870.00</p>
+          <p style="color: var(--gray-500); font-size: var(--text-sm);">28 transactions</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Bars -->
+    <div class="section">
+      <h2>Progress Bars</h2>
+      <div>
+        <div class="progress-bar">
+          <div class="progress-fill progress-success" style="width: 75%;"></div>
+        </div>
+        <p style="font-size: var(--text-sm); color: var(--gray-600); margin-bottom: var(--space-4);">Budget: 75% used</p>
+
+        <div class="progress-bar">
+          <div class="progress-fill progress-warning" style="width: 60%;"></div>
+        </div>
+        <p style="font-size: var(--text-sm); color: var(--gray-600); margin-bottom: var(--space-4);">Savings Goal: 60% complete</p>
+
+        <div class="progress-bar">
+          <div class="progress-fill progress-danger" style="width: 90%;"></div>
+        </div>
+        <p style="font-size: var(--text-sm); color: var(--gray-600); margin-bottom: var(--space-4);">Credit Limit: 90% used</p>
+
+        <div class="progress-bar">
+          <div class="progress-fill progress-primary" style="width: 45%;"></div>
+        </div>
+        <p style="font-size: var(--text-sm); color: var(--gray-600);">Investment: 45% allocated</p>
+      </div>
+    </div>
+
+    <!-- Tables -->
+    <div class="section">
+      <h2>Tables</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Salary Deposit</td>
+            <td>Income</td>
+            <td>2024-01-15</td>
+            <td style="color: var(--success-600);">+$5,000.00</td>
+            <td><span class="badge badge-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>Grocery Shopping</td>
+            <td>Food</td>
+            <td>2024-01-14</td>
+            <td style="color: var(--danger-600);">-$156.32</td>
+            <td><span class="badge badge-success">Completed</span></td>
+          </tr>
+          <tr>
+            <td>Electric Bill</td>
+            <td>Utilities</td>
+            <td>2024-01-13</td>
+            <td style="color: var(--danger-600);">-$89.50</td>
+            <td><span class="badge badge-warning">Pending</span></td>
+          </tr>
+          <tr>
+            <td>Freelance Payment</td>
+            <td>Income</td>
+            <td>2024-01-12</td>
+            <td style="color: var(--success-600);">+$1,200.00</td>
+            <td><span class="badge badge-success">Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Form Elements -->
+    <div class="section">
+      <h2>Form Elements</h2>
+      <div class="demo-grid">
+        <div class="demo-item">
+          <label class="label">Default Input</label>
+          <input type="text" class="input" placeholder="Enter text...">
+        </div>
+        <div class="demo-item">
+          <label class="label">Small Input</label>
+          <input type="text" class="input input-sm" placeholder="Small...">
+        </div>
+        <div class="demo-item">
+          <label class="label">Large Input</label>
+          <input type="text" class="input input-lg" placeholder="Large...">
+        </div>
+        <div class="demo-item">
+          <label class="label">Error State</label>
+          <input type="text" class="input input-error" placeholder="Error state...">
+          <p style="color: var(--danger-600); font-size: var(--text-xs); margin-top: var(--space-1);">This field is required</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Demo -->
+    <div class="section">
+      <h2>Modal</h2>
+      <button class="btn btn-primary btn-md" onclick="showModal()">Open Modal</button>
+    </div>
+
+    <!-- Border Radius -->
+    <div class="section">
+      <h2>Border Radius</h2>
+      <div class="demo-grid">
+        <div class="demo-item" style="display: flex; align-items: center; justify-content: center;">
+          <div style="width: 60px; height: 60px; background: var(--primary-500); border-radius: var(--radius-sm);"></div>
+          <span style="margin-left: var(--space-2);">Small (4px)</span>
+        </div>
+        <div class="demo-item" style="display: flex; align-items: center; justify-content: center;">
+          <div style="width: 60px; height: 60px; background: var(--primary-500); border-radius: var(--radius-md);"></div>
+          <span style="margin-left: var(--space-2);">Medium (8px)</span>
+        </div>
+        <div class="demo-item" style="display: flex; align-items: center; justify-content: center;">
+          <div style="width: 60px; height: 60px; background: var(--primary-500); border-radius: var(--radius-lg);"></div>
+          <span style="margin-left: var(--space-2);">Large (12px)</span>
+        </div>
+        <div class="demo-item" style="display: flex; align-items: center; justify-content: center;">
+          <div style="width: 60px; height: 60px; background: var(--primary-500); border-radius: var(--radius-xl);"></div>
+          <span style="margin-left: var(--space-2);">Extra Large (16px)</span>
+        </div>
+        <div class="demo-item" style="display: flex; align-items: center; justify-content: center;">
+          <div style="width: 60px; height: 60px; background: var(--primary-500); border-radius: var(--radius-full);"></div>
+          <span style="margin-left: var(--space-2);">Full (Pill)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typography -->
+    <div class="section">
+      <h2>Typography</h2>
+      <div>
+        <p style="font-size: var(--text-xs);">Extra Small (12px) - Captions, labels</p>
+        <p style="font-size: var(--text-sm);">Small (14px) - Secondary text</p>
+        <p style="font-size: var(--text-base);">Base (16px) - Body text</p>
+        <p style="font-size: var(--text-lg);">Large (18px) - Emphasis</p>
+        <p style="font-size: var(--text-xl);">Extra Large (20px) - Headings</p>
+        <p style="font-size: var(--text-2xl);">2XL (24px) - Section titles</p>
+        <p style="font-size: var(--text-3xl);">3XL (30px) - Page titles</p>
+        <p style="font-size: var(--text-4xl);">4XL (36px) - Hero text</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal-overlay" style="display: none;" onclick="hideModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">Confirm Transaction</div>
+      <div class="modal-body">
+        Are you sure you want to add this transaction? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-md" onclick="hideModal()">Cancel</button>
+        <button class="btn btn-primary btn-md" onclick="hideModal()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      document.querySelector('.theme-toggle').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    function showModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function hideModal(event) {
+      if (!event || event.target === document.getElementById('modal')) {
+        document.getElementById('modal').style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
