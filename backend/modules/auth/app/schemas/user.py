@@ -1,5 +1,6 @@
 """User schemas for authentication."""
 
+from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 
@@ -28,7 +29,7 @@ class UserResponse(UserBase):
     """Schema for user response."""
 
     id: int = Field(..., description="User ID")
-    created_at: str = Field(..., description="User creation timestamp")
+    created_at: datetime = Field(..., description="User creation timestamp")
 
     class Config:
         from_attributes = True

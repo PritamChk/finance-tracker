@@ -14,6 +14,7 @@ if str(backend_root) not in sys.path:
 from shared.config_loader import load_config
 from shared.database import init_db
 from app.models.user import User
+from app.api.auth import router as auth_router
 
 # Load config from local application.properties
 config_path = Path(__file__).parent.parent / "application.properties"
@@ -33,6 +34,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+app.include_router(auth_router)
 
 
 @app.on_event("startup")

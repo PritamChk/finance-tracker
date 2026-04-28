@@ -19,3 +19,8 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email})>"
+
+    @property
+    def created_at_str(self) -> str:
+        """Return created_at as ISO format string."""
+        return self.created_at.isoformat() if self.created_at else ""
