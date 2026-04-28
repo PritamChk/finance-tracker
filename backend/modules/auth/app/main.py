@@ -12,6 +12,8 @@ if str(backend_root) not in sys.path:
     sys.path.insert(0, str(backend_root))
 
 from shared.config_loader import load_config
+from shared.database import init_db
+from app.models.user import User
 
 # Load config from local application.properties
 config_path = Path(__file__).parent.parent / "application.properties"
@@ -31,6 +33,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize database tables on startup."""
+    init_db()
 
 
 @app.get("/")
