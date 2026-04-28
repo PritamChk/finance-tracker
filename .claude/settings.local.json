@@ -11,7 +11,9 @@
       "Bash(git mv *)",
       "Bash(git commit *)",
       "Read(//c/Users/PRITAM/.claude/plugins/marketplaces/caveman/skills/compress/**)",
-      "Bash(python3 -m scripts \"P:\\\\Codes\\\\AI\\\\tictactoe\\\\agent.md\")"
+      "Bash(python3 -m scripts \"P:\\\\Codes\\\\AI\\\\tictactoe\\\\agent.md\")",
+      "Bash(chmod +x *)",
+      "Bash(uv run *)"
     ]
   },
   "enabledPlugins": {
