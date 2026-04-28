@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from shared.database import get_db
 from shared.security import decode_access_token
 from app.crud.user import get_user_by_email
+from app.core.logger import logger
 from app.models.user import User
 
 security = HTTPBearer()
@@ -31,6 +32,7 @@ async def get_current_user(
     payload = decode_access_token(token)
 
     if payload is None:
+        logger.error("GET_ME_FAIL|reason=invalid_token")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
@@ -39,6 +41,7 @@ async def get_current_user(
 
     email: str = payload.get("sub")
     if email is None:
+        logger.error("GET_ME_FAIL|reason=invalid_token")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid authentication credentials",
@@ -47,6 +50,7 @@ async def get_current_user(
 
     user = get_user_by_email(db, email)
     if user is None:
+        logger.error("GET_ME_FAIL|reason=user_not_found")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found",

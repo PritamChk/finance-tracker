@@ -15,6 +15,7 @@ from shared.config_loader import load_config
 from shared.database import init_db
 from app.models.user import User
 from app.api.auth import router as auth_router
+from app.middleware.logging import log_requests
 
 # Load config from local application.properties
 config_path = Path(__file__).parent.parent / "application.properties"
@@ -34,6 +35,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add logging middleware
+app.middleware("http")(log_requests)
 
 # Include routers
 app.include_router(auth_router)
