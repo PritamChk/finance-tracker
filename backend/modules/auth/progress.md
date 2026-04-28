@@ -1,6 +1,6 @@
 # Auth Module Progress
 
-## Status: Phase 2 Complete
+## Status: Phase 3 Complete
 
 ### Completed
 - [x] FastAPI project structure created
@@ -16,24 +16,26 @@
 - [x] Schemas __init__.py updated
 - [x] Database initialization added to main.py
 - [x] Server verified - starts without errors, creates users table
+- [x] User CRUD operations created (app/crud/user.py)
+- [x] Authentication dependency created (app/core/deps.py)
+- [x] CRUD __init__.py created with exports
 
 ### Next Session Start Point
-**Phase 3: Security Implementation**
+**Phase 4: API Endpoints & Testing**
 
 Files to create:
-- `app/crud/user.py` - User CRUD operations (get_user_by_email, get_user_by_id, create_user, authenticate_user)
-- `app/crud/__init__.py` - CRUD exports
-- `app/core/deps.py` - Authentication dependency (get_current_user)
+- `app/api/auth.py` - Auth endpoints (register, login, logout, me)
+- `app/api/__init__.py` - API router exports
+- Update `app/main.py` - Include auth router
 
 **Scripts to use:**
 - `start.sh` (Linux/Mac) or `start.ps1` (Windows) - Start dev server on port 8001
 - `stop.sh` (Linux/Mac) or `stop.ps1` (Windows) - Stop server
 
 ### Pending Tasks
-1. Implement auth routes (login, register, logout) - Phase 4
-2. Add JWT token handling - Phase 3
-3. Unit tests in `tests/` folder - Phase 4
-4. Integration tests - Phase 4
+1. Implement auth routes (login, register, logout, me) - Phase 4
+2. Unit tests in `tests/` folder - Phase 4
+3. Integration tests - Phase 4
 
 ### Module Structure
 ```

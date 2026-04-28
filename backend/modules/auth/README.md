@@ -103,6 +103,13 @@ auth/
 
 See `progress.md` for current status and next steps.
 
+### Phase Status
+
+- **Phase 1:** ✅ Complete - FastAPI setup with config and CORS
+- **Phase 2:** ✅ Complete - Database models and schemas
+- **Phase 3:** ✅ Complete - Security implementation (password hashing, JWT, auth deps)
+- **Phase 4:** 🔄 In Progress - API endpoints and testing
+
 ## License
 
 MIT
