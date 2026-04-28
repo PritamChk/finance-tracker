@@ -1,13 +1,23 @@
 # Project Context
 
 ## What This Is
-FinanceTrackerApp design system showcase. HTML component library based on color-scheme.md.
+FinanceTrackerApp - Full-stack finance tracker with modular backend architecture.
 
 ## Key Files
-- `planning/color-scheme.md` - Full design system (colors, spacing, components, conventions)
+- `planning/color-scheme.md` - Design system (colors, spacing, components)
 - `planning/component-showcase.html` - Live demo of all components
 - `planning/progress.md` - Development progress tracker
-- `README.md` - Project overview and setup
+- `backend/README.md` - Backend architecture overview
+- `backend/config/application.properties` - Central config (ports, DB, security)
+- `backend/shared/` - Shared utilities (config_loader, database, security)
+- `backend/modules/{module}/planning/{module}_phase{N}_v1.0.md` - Phase plans
+
+## Backend Architecture
+- 6 modules: auth, categories, transactions, budgets, analytics, reports
+- Each module = separate FastAPI app with own Swagger UI
+- Single SQLite DB at `backend/database/finance_tracker.db`
+- Ports: 8001-8006 (from application.properties)
+- Tech: FastAPI, SQLAlchemy, Pydantic, JWT, bcrypt
 
 ## Design System Specs
 - Primary: Blue (#3b82f6)
