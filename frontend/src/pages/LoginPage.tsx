@@ -28,7 +28,7 @@ const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await authService.login(data);
-      setAuth(response.access_token, response.refresh_token);
+      setAuth(response.access_token, '');
       navigate('/dashboard');
     } catch (error: any) {
       alert(error.response?.data?.detail || 'Login failed');

@@ -10,7 +10,6 @@ export interface User {
 
 export interface AuthResponse {
   access_token: string;
-  refresh_token: string;
   token_type: string;
 }
 
@@ -46,6 +45,10 @@ const authService = {
   async getCurrentUser(): Promise<User> {
     const response = await api.get<User>('/auth/me');
     return response.data;
+  },
+
+  async logout(): Promise<void> {
+    await api.post('/auth/logout');
   },
 };
 

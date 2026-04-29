@@ -110,16 +110,17 @@ async def refresh_token(request: Request, current_user: User = Depends(get_curre
 
 @router.get("/me", response_model=UserResponse)
 async def get_me(request: Request, current_user: User = Depends(get_current_user)):
-    """Get current user information.
-
-    Args:
-        request: FastAPI request.
-        current_user: Current authenticated user.
-
-    Returns:
-        Current user information.
-    """
+    """Get current user information."""
     client_ip = request.client.host if request.client else "unknown"
     logger.info(f"GET_ME|user_id={current_user.id}|ip={client_ip}")
     logger.info(f"GET_ME_SUCCESS|user_id={current_user.id}")
     return current_user
+
+
+@router.post("/logout")
+async def logout(request: Request, current_user: User = Depends(get_current_user)):
+    """Logout current user."""
+    client_ip = request.client.host if request.client else "unknown"
+    logger.info(f"LOGOUT|user_id={current_user.id}|ip={client_ip}")
+    logger.info(f"LOGOUT_SUCCESS|user_id={current_user.id}")
+    return {"message": "Logged out successfully"}

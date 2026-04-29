@@ -1,30 +1,44 @@
-import React from 'react';
-import { useAuth } from '../hooks/useAuth';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import authService from '../services/auth.service';
+import { useAuthStore } from '../stores/auth.store';
 
 const DashboardPage: React.FC = () => {
-  const { data: user, isLoading } = useAuth();
   const navigate = useNavigate();
+  const { accessToken, clearAuth } = useAuthStore();
+  const [user, setUser] = useState<{ full_name: string; email: string } | null>(null);
 
-  if (isLoading) return <div className="auth-container">Loading...</div>;
-  if (!user) return null; // ProtectedRoute should handle this, but just in case
+  useEffect(() => {
+    if (!accessToken) {
+      navigate('/login', { replace: true });
+      return;
+    }
+    authService.getCurrentUser()
+      .then(setUser)
+      .catch(() => {
+        clearAuth();
+        navigate('/login', { replace: true });
+      });
+  }, [accessToken, clearAuth, navigate]);
+
+  const handleLogout = () => {
+    authService.logout().catch(() => {});
+    clearAuth();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <div className="auth-container">
       <div className="card">
         <h1 className="card-title">Dashboard</h1>
         <p className="card-subtitle">Welcome to the TicTacToe Arena!</p>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <p>Hello, <strong>{user.full_name}</strong>!</p>
-          <p>Email: {user.email}</p>
-        </div>
-        <button 
-          onClick={() => {
-            window.localStorage.clear();
-            navigate('/login');
-          }} 
-          className="btn btn-secondary"
-        >
+        {user && (
+          <div className="dashboard-info">
+            <p><strong>Name:</strong> {user.full_name}</p>
+            <p><strong>Email:</strong> {user.email}</p>
+          </div>
+        )}
+        <button onClick={handleLogout} className="btn btn-primary">
           Logout
         </button>
       </div>
