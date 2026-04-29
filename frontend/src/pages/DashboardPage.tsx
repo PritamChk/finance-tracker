@@ -21,26 +21,17 @@ const DashboardPage: React.FC = () => {
       });
   }, [accessToken, clearAuth, navigate]);
 
-  const handleLogout = () => {
-    authService.logout().catch(() => {});
-    clearAuth();
-    navigate('/login', { replace: true });
-  };
-
   return (
-    <div className="auth-container">
+    <div className="dashboard-page">
       <div className="card">
         <h1 className="card-title">Dashboard</h1>
-        <p className="card-subtitle">Welcome to the TicTacToe Arena!</p>
+        <p className="card-subtitle">Welcome to the Finance Tracker!</p>
         {user && (
           <div className="dashboard-info">
             <p><strong>Name:</strong> {user.full_name}</p>
             <p><strong>Email:</strong> {user.email}</p>
           </div>
         )}
-        <button onClick={handleLogout} className="btn btn-primary">
-          Logout
-        </button>
       </div>
     </div>
   );

@@ -461,4 +461,41 @@ cd frontend && npm run build  # Production build
 
 # Backend
 cd backend && uvicorn app.main:app --reload --port 8001
-```
+```---
+
+# Session Learnings: Categories Module + CORS Fix
+
+## CORS Configuration
+- The categories backend (port 8002) had `cors.allowed_origins=http://localhost:3000` in `application.properties`, but the Vite dev server runs on port 5173 by default.
+- This caused all OPTIONS preflight requests to return 400 Bad Request.
+- Fix: Add `http://localhost:5173` to the comma-separated list: `cors.allowed_origins=http://localhost:3000,http://localhost:5173`
+- Backend must be restarted after changing `application.properties` -- config is loaded at startup, not hot-reloaded.
+
+## Backend Architecture (Categories Module, port 8002)
+- Located at `backend/modules/categories/app/`
+- Entry point: `app/main.py` -- FastAPI app with lifespan for DB init, CORS middleware, and logging middleware
+- Config loaded via `application.properties` using ConfigParser (INI format, prepends `[default]` section if missing)
+- Database: SQLite via SQLAlchemy, path relative: `../../database/categories.db`
+- API routes: `app/api/categories.py` with prefix `/api/categories`
+- CRUD: `app/crud/category.py`, Models: `app/models/category.py`, Schemas: `app/schemas/category.py`
+- Custom logging middleware: `app/middleware/logging.py` using Loguru
+
+## Frontend Architecture (React + TypeScript)
+- Categories service at `frontend/src/services/categories.service.ts` uses separate axios instance for port 8002
+- Env var: `VITE_CATEGORIES_API_URL` (falls back to `http://localhost:8002`)
+- TanStack Query hooks: `frontend/src/hooks/useCategories.ts`
+- UI components: `frontend/src/components/categories/` (CategoryBadge, CategoryCard, CategoryForm, CategoryList)
+- Layout: `SidebarNav` + `MainLayout` wrapping protected routes
+- `#root` in CSS must NOT have `display:flex; justify-content:center; align-items:center;` -- that centered the whole app. Changed to `width:100%; min-height:100vh;`
+- Auth container needs `min-height:100vh; display:flex; justify-content:center; align-items:center;` to center login/register cards
+
+## Key Pattern: CORS + Port Mismatch Debugging
+- When seeing repeated OPTIONS 400 errors on a new module, always check:
+  1. CORS allowed_origins matches the actual frontend dev server port
+  2. Backend server was restarted after config changes
+  3. Vite default port is 5173, not 3000
+
+## Git Considerations
+- `application.properties` contains config but no secrets -- safe to commit
+- `.env` files should be gitignored
+- Database `.db` files should be gitignored

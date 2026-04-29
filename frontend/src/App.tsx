@@ -2,7 +2,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import CategoriesPage from './pages/CategoriesPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import MainLayout from './components/layout/MainLayout';
 import { useAuthStore } from './stores/auth.store';
 
 function App() {
@@ -11,23 +13,35 @@ function App() {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route 
-        path="/login" 
-        element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" />} 
+      <Route
+        path="/login"
+        element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" />}
       />
-      <Route 
-        path="/register" 
-        element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/dashboard" />} 
+      <Route
+        path="/register"
+        element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/dashboard" />}
       />
 
       {/* Protected Routes */}
-      <Route 
-        path="/dashboard" 
+      <Route
+        path="/dashboard"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <MainLayout>
+              <DashboardPage />
+            </MainLayout>
           </ProtectedRoute>
-        } 
+        }
+      />
+      <Route
+        path="/categories"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <CategoriesPage />
+            </MainLayout>
+          </ProtectedRoute>
+        }
       />
 
       {/* Default Route */}
