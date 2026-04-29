@@ -13,7 +13,24 @@
       "Read(//c/Users/PRITAM/.claude/plugins/marketplaces/caveman/skills/compress/**)",
       "Bash(python3 -m scripts \"P:\\\\Codes\\\\AI\\\\tictactoe\\\\agent.md\")",
       "Bash(chmod +x *)",
-      "Bash(uv run *)"
+      "Bash(uv run *)",
+      "Bash(powershell -ExecutionPolicy Bypass -File start.ps1)",
+      "Bash(powershell -ExecutionPolicy Bypass -File stop.ps1)",
+      "Bash(curl *)",
+      "Bash(grep -E '\\\\.db$')",
+      "Bash(sqlite3 auth.db \".tables\")",
+      "Bash(powershell *)",
+      "Bash(uv sync *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr :8001)",
+      "Bash(taskkill /F /PID 23824 /PID 5420 /PID 1808)",
+      "Bash(taskkill /F /PID 20508)",
+      "Bash(taskkill /F /PID 2248)",
+      "Bash(uv pip *)",
+      "Bash(taskkill /F /PID 24756)",
+      "Bash(taskkill /F /IM python.exe)",
+      "Bash(uv venv *)",
+      "Bash(python -m json.tool)"
     ]
   },
   "enabledPlugins": {

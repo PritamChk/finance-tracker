@@ -1,5 +1,6 @@
 """FastAPI application entry point for Auth module."""
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,10 +22,21 @@ from app.middleware.logging import log_requests
 config_path = Path(__file__).parent.parent / "application.properties"
 config = load_config(str(config_path))
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifespan context manager for startup and shutdown events."""
+    # Startup
+    init_db()
+    yield
+    # Shutdown (if needed)
+
+
 app = FastAPI(
     title="Auth Module API",
     description="Authentication and authorization endpoints",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 # Configure CORS

@@ -100,17 +100,15 @@ class Config:
 
     def _parse_key(self, key: str) -> tuple[str, str]:
         """Parse key into section and option.
-
+        
         Args:
             key: Configuration key (e.g., 'auth.port')
-
+        
         Returns:
             Tuple of (section, option).
         """
-        parts = key.split(".", 1)
-        if len(parts) == 2:
-            return parts[0], parts[1]
-        return "default", parts[0]
+        return "default", key
+
 
 
 # Global config instance
