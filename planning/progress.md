@@ -1,11 +1,16 @@
 # Progress Tracker
 
 ## Completed
-- [x] Color scheme defined (color-scheme.md)
-- [x] Component showcase HTML created (component-showcase.html)
+- [x] Color scheme defined (color-scheme. md)
+- [x] Component showcase HTML created (component-showcase. html)
 - [x] Dark mode support implemented
 - [x] All component variants demonstrated
 - [x] Design system documentation complete
+- [x] Authentication flow - Frontend (Apr 30, 2026)
+- [x] Zustand auth store implementation
+- [x] Login/Register/Dashboard pages
+- [x] ProtectedRoute component
+- [x] Backend logout endpoint
 
 ## In Progress
 - [ ] React component library setup
@@ -18,11 +23,11 @@
 - [ ] Build TransactionList component
 - [ ] Build LoginForm component
 - [ ] Set up TypeScript types
-- [ ] Create utility hooks (useAuth, formatDate)
-- [ ] API client setup
-- [ ] State management (Redux/Zustand)
-- [ ] Routing setup
-- [ ] Authentication flow
+- [x] Create utility hooks (useAuth, formatDate)
+- [x] API client setup
+- [x] State management (Redux/Zustand)
+- [x] Routing setup
+- [x] Authentication flow
 - [ ] Dashboard layout
 - [ ] Charts integration
 - [ ] Responsive design

@@ -1,6 +1,36 @@
-# Implementation Plan: Frontend AuthModule
+﻿# Implementation Plan: Frontend AuthModule
+
+> **Status: IMPLEMENTATION COMPLETED** - Last Updated: April 30, 2026
+
+## Progress Tracking
+| Milestone | Status | Date Completed | Notes |
+| :--- | :---: | :---: | :--- |
+| Token Type Mismatch Fix | COMPLETED | Apr 30, 2026 | Backend returns `access_token` only, not `refresh_token` |
+| AuthResponse Interface Update | COMPLETED | Apr 30, 2026 | Updated to match backend response structure |
+| LoginPage Update | COMPLETED | Apr 30, 2026 | Pass empty string for refresh_token field |
+| Backend Logout Endpoint | COMPLETED | Apr 30, 2026 | Added `/auth/logout` to backend |
+| DashboardPage Logout Button | COMPLETED | Apr 30, 2026 | Added logout functionality |
+| State Management Simplification | COMPLETED | Apr 30, 2026 | Removed TanStack Query, use Zustand only |
+| React StrictMode Removal | COMPLETED | Apr 30, 2026 | Removed from main.tsx - caused double API calls |
+
+## Implementation Summary
+The authentication module has been fully implemented with:
+- **Zustand Store** (`src/stores/auth.store.ts`) - Session state management
+- **Auth Service** (`src/services/auth.service.ts`) - API methods matching backend
+- **Login Page** (`src/pages/LoginPage.tsx`) - Login form with setAuth call
+- **Dashboard Page** (`src/pages/DashboardPage.tsx`) - Protected page with logout button
+- **Backend Auth Endpoints** (`backend/modules/auth/app/api/auth.py`) - All auth endpoints
+
+### Key Technical Details
+- Backend Login Response: `{ "access_token": "...", "token_type": "bearer" }` - NO refresh_token
+- Backend /me Response: `{ id, email, full_name, is_active, created_at }`
+- Backend Routes Prefix: All auth routes use `/api/auth/*`
+
+---
 
 This document provides a detailed implementation plan for the `AuthModule` of the FinanceTrackerApp, based on the overall frontend strategy, design system, and backend API specifications.
+
+### Key Implementation Decisions
 
 ## 1. Overview
 The `AuthModule` is responsible for handling user authentication, registration, session persistence, and access control. It will integrate with the Backend Auth API and manage the global authentication state using a combination of Zustand and TanStack Query.
@@ -121,3 +151,16 @@ Consistent feedback is critical for a professional user experience.
   - `409 Conflict` $\rightarrow$ "Email already registered."
   - `401 Unauthorized` $\rightarrow$ "Invalid email or password."
   - `400 Bad Request` $\rightarrow$ "Please check your input and try again."
+## 7. Key Implementation Decisions
+### Deviations from Original Plan
+| Decision | Original Plan | Actual Implementation | Reason |
+| :--- | :--- | :--- | :--- |
+| State Management | Zustand + TanStack Query hybrid | Zustand only | Simplicity - TanStack Query added unnecessary complexity |
+| Token Storage | Both access + refresh tokens | Access token only | Backend only returns `access_token`, no `refresh_token` |
+| Logout | Not specified | `navigate('/login', { replace: true })` | Prevent back-button issues after logout |
+### Resolved Issues
+1. **Token Type Mismatch**: Backend returns `access_token` only, but frontend expected `refresh_token`. Fixed by updating `AuthResponse` interface to match backend.
+2. **Logout Returns 401**: Even though `/me` worked, `/logout` returned 401. Fixed by simplifying to Zustand-only approach.
+3. **React StrictMode Double Calls**: Caused duplicate API calls in development. Fixed by removing StrictMode from `main.tsx`.
+### Navigation Strategy
+- Logout: `navigate('/login', { replace: true })` prevents back-button returning to protected pages
