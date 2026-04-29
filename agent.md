@@ -440,6 +440,21 @@ ERROR|2026-04-29 02:42:27.384|GET_CATEGORY_FAIL|id=999|reason=not_found
 
 ---
 
+# CORS Update Rule (MANDATORY for New Modules)
+
+## Whenever developing a new module API
+ALWAYS update `application.properties` for that module's CORS config to include the frontend dev server:
+```
+cors.allowed_origins=http://localhost:5173,http://localhost:3000
+```
+- Vite dev server default port is 5173
+- If `application.properties` already has origins, append (comma-separated)
+- After changing CORS, restart the backend server (config loaded at startup, not hot-reloaded)
+- Symptoms of missing CORS: repeated OPTIONS requests returning 400 Bad Request in backend logs
+- Check frontend dev server port with `npm run dev` output and match it in CORS config
+
+---
+
 # Git Commit Preference
 
 ## Signature
