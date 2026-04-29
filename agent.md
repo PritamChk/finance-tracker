@@ -244,6 +244,215 @@ git push
 
 ---
 
+# Backend Module Creation Pattern
+
+## Structure
+Each module follows this pattern (e.g., categories):
+```
+backend/modules/{module}/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # FastAPI app entry
+│   ├── database.py         # SQLAlchemy setup
+│   ├── api/
+│   │   ├── __init__.py
+│   │   └── {module}.py     # Endpoints
+│   ├── crud/
+│   │   ├── __init__.py
+│   │   └── {module}.py    # CRUD operations
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── {module}.py    # SQLAlchemy model
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   └── {module}.py    # Pydantic schemas
+│   ├── core/
+│   │   ├── __init__.py
+│   │   └── logger.py      # Loguru config
+│   └── middleware/
+│       ├── __init__.py
+│       └── logging.py      # Request/response logging
+├── tests/
+│   ├── __init__.py
+│   └── test_{module}.py
+├── planning/               # Phase plans
+├── pyproject.toml         # Dependencies
+├── start.ps1            # Windows start script
+├── start.sh             # Unix start script
+└── application.properties  # Config (port, CORS)
+```
+
+## Dependencies (pyproject.toml)
+```toml
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy",
+    "pydantic",
+    "pytest",
+    "pytest-asyncio",
+    "httpx",
+    "loguru",  # For logging
+]
+```
+
+## Database Setup
+```python
+# app/database.py
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///path/to/db.db"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+def init_db():
+    Base.metadata.create_all(bind=engine)
+```
+
+## FastAPI App Setup
+```python
+# app/main.py
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()  # Initialize tables
+    yield
+
+app = FastAPI(title="Module API", version="1.0.0", lifespan=lifespan)
+app.add_middleware(CORSMiddleware, allow_origins=[...], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+```
+
+---
+
+# Logging Pattern (Loguru)
+
+## Logger Configuration
+```python
+# app/core/logger.py
+from loguru import logger
+from pathlib import Path
+import sys
+
+log_dir = Path(__file__).parent.parent.parent / "log"
+log_dir.mkdir(exist_ok=True)
+
+log_format = "{level}|{time:YYYY-MM-DD HH:mm:ss.SSS}|{message}"
+
+logger.remove()
+
+# Console handler
+logger.add(sys.stdout, format=log_format, level="INFO", colorize=True)
+
+# Daily rotating log
+logger.add(
+    log_dir / "module_sysdate.{time:YYYYMMDD}.log",
+    format=log_format, level="INFO",
+    rotation="00:00", retention="25 days",
+    compression="zip", enqueue=True
+)
+
+# Error log
+logger.add(
+    log_dir / "module_errors.{time:YYYYMMDD}.log",
+    format=log_format, level="ERROR",
+    rotation="00:00", retention="25 days",
+    compression="zip", enqueue=True
+)
+```
+
+## Logging Middleware
+```python
+# app/middleware/logging.py
+from fastapi import Request
+from app.core.logger import logger
+import time
+
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    client_ip = request.client.host if request.client else "unknown"
+    logger.info(f"REQUEST|method={request.method}|path={request.url.path}|ip={client_ip}")
+    response = await call_next(request)
+    duration = time.time() - start_time
+    logger.info(f"RESPONSE|status={response.status_code}|duration={duration:.3f}s|path={request.url.path}")
+    return response
+```
+
+## Endpoint Logging Pattern
+```python
+# app/api/module.py
+from app.core.logger import logger
+
+@router.get("")
+async def list_items(request: Request, ...):
+    client_ip = request.client.host if request.client else "unknown"
+    logger.info(f"LIST_ITEMS|user_id={user_id}|ip={client_ip}")
+    items = get_items(db, user_id)
+    logger.info(f"LIST_ITEMS_SUCCESS|count={len(items)}|user_id={user_id}")
+    return items
+
+@router.post("")
+async def create_item(request: Request, item: ItemCreate, db):
+    client_ip = request.client.host if request.client else "unknown"
+    logger.info(f"CREATE_ITEM|name={item.name}|user_id={item.user_id}|ip={client_ip}")
+    created = create_item(db, item)
+    logger.info(f"CREATE_ITEM_SUCCESS|id={created.id}|name={created.name}")
+    return created
+
+@router.get("/{item_id}")
+async def get_item(request: Request, item_id: int, db):
+    client_ip = request.client.host if request.client else "unknown"
+    logger.info(f"GET_ITEM|id={item_id}|ip={client_ip}")
+    item = get_item(db, item_id)
+    if not item:
+        logger.error(f"GET_ITEM_FAIL|id={item_id}|reason=not_found")
+        raise HTTPException(status_code=404, detail="Not found")
+    logger.info(f"GET_ITEM_SUCCESS|id={item_id}")
+    return item
+```
+
+## Register Middleware in main.py
+```python
+from app.middleware.logging import log_requests
+app.middleware("http")(log_requests)
+```
+
+## Log Format Examples
+```
+INFO|2026-04-29 02:39:15.784|REQUEST|method=POST|path=/api/categories|ip=127.0.0.1
+INFO|2026-04-29 02:39:15.790|CREATE_CATEGORY|name=Food|type=expense|user_id=1|ip=127.0.0.1
+INFO|2026-04-29 02:39:15.855|CREATE_CATEGORY_SUCCESS|id=1|name=Food
+INFO|2026-04-29 02:39:15.857|RESPONSE|status=201|duration=0.073s|path=/api/categories
+ERROR|2026-04-29 02:42:27.384|GET_CATEGORY_FAIL|id=999|reason=not_found
+```
+
+---
+
+# Git Commit Preference
+
+## Signature
+Use: Abhishek <abhishek@anomaly.co.in>
+
+## Commit Style
+- One commit per logical change (e.g., "Add logging to categories module")
+- If multiple independent features: separate commits
+- Commit message format: Brief description (1-2 sentences)
+- Focus on "why" not "what"
+
+---
+
 # Build & Test
 ```
 # Frontend
