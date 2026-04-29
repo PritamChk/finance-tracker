@@ -458,7 +458,7 @@ cors.allowed_origins=http://localhost:5173,http://localhost:3000
 # Git Commit Preference
 
 ## Signature
-Use: Abhishek <abhishek@anomaly.co.in>
+Use the default git config. Do NOT override author/signature unless explicitly told to.
 
 ## Commit Style
 - One commit per logical change (e.g., "Add logging to categories module")
