@@ -1,10 +1,41 @@
 # FinanceTrackerApp
 
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.3-blue?logo=react" alt="React">
+  <img src="https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Vite-5.x-purple?logo=vite" alt="Vite">
+  <img src="https://img.shields.io/badge/FastAPI-0.115-green?logo=fastapi" alt="FastAPI">
+  <img src="https://img.shields.io/badge/SQLAlchemy-2.0-red?logo=sqlalchemy" alt="SQLAlchemy">
+  <img src="https://img.shields.io/badge/SQLite-003545?logo=sqlite" alt="SQLite">
+  <img src="https://img.shields.io/badge/Python-3.12-yellow?logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/Zustand-4.5-purple" alt="Zustand">
+  <img src="https://img.shields.io/badge/TanStack-Query-5-orange" alt="TanStack Query">
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+</p>
+
 Personal finance tracking application with clean design system and modern UI components.
 
-## Overview
+## Tech Stack
 
-Track income, expenses, budgets, and financial goals with an intuitive interface. Built with a comprehensive design system ensuring consistency across all components.
+| Category | Technology | Version |
+|----------|-----------|---------|
+| **Frontend** | React | 18.3.x |
+| | TypeScript | 5.x |
+| | Vite | 5.x |
+| | Zustand | 4.5.x |
+| | TanStack Query | 5.x |
+| | React Router DOM | 6.x |
+| | React Hook Form | 7.x |
+| | Zod | 3.x |
+| | date-fns | 3.x |
+| **Backend** | FastAPI | 0.115.x |
+| | SQLAlchemy | 2.0.x |
+| | Pydantic | 2.x |
+| | Python-Jose | 3.x |
+| | Loguru | 3.x |
+| **Database** | SQLite | 3.x |
+| **Tools** | Argon2 | 1.x |
+| | Pytest | 8.x |
 
 ## Features
 
@@ -13,6 +44,107 @@ Track income, expenses, budgets, and financial goals with an intuitive interface
 - **Visual Analytics**: Charts and progress indicators
 - **Dark Mode**: Full theme support
 - **Responsive Design**: Works on all screen sizes
+- **Modular Backend**: Separate FastAPI services per domain
+
+## Progress
+
+### Overall Development
+
+```
+███████░░░░░░░░░░░░░░░░░░ 55% Complete
+```
+
+| Module | Backend | Frontend | Status |
+|--------|---------|----------|--------|
+| Auth | ✅ Complete | ✅ Complete | Shipped |
+| Categories | ✅ Complete | ✅ Complete | Shipped |
+| Transactions | ✅ Complete | ✅ Complete | Shipped |
+| Budgets | ❌ Pending | ❌ Pending | Planned |
+| Analytics | ❌ Pending | ❌ Pending | Planned |
+
+### Completed Features
+
+- [x] Frontend design system (color palette, component showcase)
+- [x] Auth module (user registration, login, JWT, Argon2)
+- [x] Categories module (CRUD, sidebar layout, CORS)
+- [x] Transactions module (CRUD, pagination, filtering, test suite)
+
+### Upcoming
+
+- [ ] Budget module
+- [ ] Analytics dashboard
+- [ ] Reports generation
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Python 3.12+
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone repository
+git clone https://github.com/PritamChk/finance-tracker.git
+cd finance-tracker
+
+# Frontend setup
+cd frontend
+npm install
+npm run dev
+
+# Backend setup (per module)
+cd backend/modules/auth
+./start.ps1  # Windows
+./start.sh   # Linux/Mac
+```
+
+## Project Structure
+
+```
+├── README.md                    # This file
+├── agent.md                     # AI context & learnings
+├── progress.md                  # Development tracker
+├── frontend/                    # React + TypeScript
+│   ├── src/
+│   │   ├── components/          # React components
+│   │   ├── hooks/               # Custom hooks
+│   │   ├── services/            # API services
+│   │   ├── pages/               # Page components
+│   │   ├── stores/              # Zustand stores
+│   │   └── types/               # TypeScript types
+│   └── package.json
+├── backend/                     # FastAPI backend
+│   ├── shared/                  # Shared utilities
+│   ├── database/                # SQLite databases
+│   └── modules/                 # Domain modules
+│       ├── auth/                # Auth service (port 8001)
+│       ├── categories/          # Categories service (port 8002)
+│       └── transactions/         # Transactions service (port 8003)
+└── planning/                    # Planning docs
+```
+
+## Available Scripts
+
+### Frontend
+
+```bash
+cd frontend
+npm run dev      # Start development server (port 5174)
+npm run build    # Build for production
+npm run lint     # Run linter
+```
+
+### Backend
+
+```bash
+# Start individual modules
+cd backend/modules/auth && ./start.ps1      # Port 8001
+cd backend/modules/categories && ./start.ps1 # Port 8002
+cd backend/modules/transactions && ./start.ps1 # Port 8003
+```
 
 ## Design System
 
@@ -32,73 +164,6 @@ Track income, expenses, budgets, and financial goals with an intuitive interface
 - **Hooks**: camelCase (`useAuth.ts`)
 - **Styles**: kebab-case (`button.css`)
 - **Classes**: kebab-case (`.transaction-card`)
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-
-### Installation
-
-```bash
-# Clone repository
-git clone <repository-url>
-cd tictactoe
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-## Project Structure
-
-```
-├── color-scheme.md          # Design system documentation
-├── component-showcase.html  # Live component demos
-├── agent.md                 # Project context for AI
-├── progress.md              # Development progress tracker
-└── src/
-    ├── components/          # React components
-    ├── lib/                 # Utilities and helpers
-    └── styles/              # Global styles
-```
-
-## Available Scripts
-
-```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run test     # Run tests
-npm run lint     # Run linter
-```
-
-## Component Showcase
-
-Open `component-showcase.html` in your browser to see all available components with live examples and dark mode toggle.
-
-## Development Status
-
-See [progress.md](./progress.md) for current development status and upcoming features.
-
-## Contributing
-
-1. Follow naming conventions defined in `color-scheme.md`
-2. Use design system colors and spacing
-3. Test in both light and dark modes
-4. Ensure accessibility standards
-
-## Progress
-
-- [x] Frontend design system (color palette, component showcase)
-- [x] Auth module (user registration, login, JWT, Argon2)
-- [x] Categories module (CRUD, sidebar layout, CORS)
-- [x] Transactions module (CRUD, pagination, filtering, test suite)
-- [ ] Budget module (planned)
-- [ ] Analytics dashboard (planned)
 
 ## Backend Architecture & Learnings
 
@@ -132,7 +197,6 @@ Reusable utilities consumed by all backend modules:
 ### Logging Technique
 Each module defines its own middleware (`app/middleware/logging.py`) wrapping `app/core/logger.py`:
 ```python
-# middleware/logging.py — FastAPI middleware
 async def log_requests(request: Request, call_next):
     logger.info(f"REQUEST|method={request.method}|path={request.url.path}|ip={client_ip}")
     response = await call_next(request)
@@ -140,27 +204,20 @@ async def log_requests(request: Request, call_next):
     return response
 ```
 - Uses `loguru` for structured output with timestamps, levels, and module tags.
-- Central `logger` instance in `app/core/logger.py` configured once, imported everywhere.
 - Pipe-delimited format enables easy log parsing/aggregation.
 
-### Start/Stop Scripts Pattern
-Cross-platform scripts in each module root (`start.ps1`, `start.sh`, `stop.ps1`, `stop.sh`):
-
-**Start scripts:**
-1. `cd` to script directory (`$PSScriptRoot` / `dirname "$0"`)
-2. Prepend `backend/` root to `PYTHONPATH` for `shared.*` imports
-3. Run `uv run uvicorn app.main:app --host 0.0.0.0 --port <PORT> --reload`
-4. Each module uses unique port (auth: 8001, categories: 8002, transactions: 8003)
-
-**Stop scripts:**
-- Windows: `Get-Process | Where-Object { ... uvicorn ... } | Stop-Process -Force`
-- Linux/Mac: `pkill -f "uvicorn app.main:app"`
-
 ### Key Patterns
-- **sys.path resolution**: `app/main.py` programmatically injects `backend/` root to `sys.path` at startup, ensuring `from shared.*` works regardless of cwd.
-- **Lifespan context manager**: `init_db()` called in FastAPI `lifespan` to create tables on startup.
-- **CORS config**: Loaded from `application.properties` via `config.get_list("cors.allowed_origins")`.
-- **Config isolation**: Each module has its own `application.properties` — no global config file required.
+- **sys.path resolution**: `app/main.py` programmatically injects `backend/` root to `sys.path` at startup
+- **Lifespan context manager**: `init_db()` called in FastAPI `lifespan` to create tables on startup
+- **CORS config**: Loaded from `application.properties` via `config.get_list("cors.allowed_origins")`
+- **Port isolation**: Each module uses unique port (auth: 8001, categories: 8002, transactions: 8003)
+
+## Contributing
+
+1. Follow naming conventions defined in this README
+2. Use design system colors and spacing
+3. Test in both light and dark modes
+4. Ensure accessibility standards
 
 ## License
 

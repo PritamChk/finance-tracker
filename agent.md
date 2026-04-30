@@ -514,3 +514,57 @@ cd backend && uvicorn app.main:app --reload --port 8001
 - `application.properties` contains config but no secrets -- safe to commit
 - `.env` files should be gitignored
 - Database `.db` files should be gitignored
+
+---
+
+# Session Learnings: Transactions Module
+
+## Backend (Transactions, port 8003)
+- Located at `backend/modules/transactions/app/`
+- Uses separate SQLite DB: `backend/database/transactions.db`
+- API endpoints:
+  - `GET /api/transactions` - List with pagination & filtering (query params: user_id, type, category_id, start_date, end_date, search, sort_by, sort_order, page, page_size)
+  - `POST /api/transactions` - Create transaction
+  - `GET /api/transactions/{id}` - Get single
+  - `PUT /api/transactions/{id}` - Update
+  - `DELETE /api/transactions/{id}` - Delete
+  - `GET /api/transactions/summary` - Get income/expense summary
+- Paginated response: `{ items[], total, page, page_size, total_pages, has_next, has_previous }`
+- Schema validation error fix: `created_at` field must be `datetime` type, not `str`
+
+## Frontend Architecture (Transactions)
+- Service: `frontend/src/services/transactions.service.ts` uses separate axios instance for port 8003
+- TanStack Query hooks: `frontend/src/hooks/useTransactions.ts`
+  - `useTransactions(queryParams)` - List with pagination
+  - `useTransaction(id)` - Single item
+  - `useCreateTransaction(userId)` - Create mutation
+  - `useUpdateTransaction(userId)` - Update mutation
+  - `useDeleteTransaction(userId)` - Delete mutation
+  - `useTransactionSummary(userId)` - Summary stats
+- Types: `frontend/src/types/transaction.types.ts` (TransactionDTO, CreateTransactionData, QueryParams, etc.)
+- Components: `frontend/src/components/transactions/`
+  - TransactionCard.tsx - Individual transaction display
+  - TransactionForm.tsx - Modal form with Zod validation, type toggle, category dropdown
+  - TransactionList.tsx - Paginated table with filters (type, category, date range, search), sorting, pagination
+  - TransactionSummary.tsx - Income/expense/net summary cards
+- Page: `frontend/src/pages/TransactionsPage.tsx` - Composes all components with CRUD + modals
+
+## Fix: ResponseValidationError
+- Error: `Input should be a valid string` for `created_at` field
+- Root cause: Pydantic schema expected `str` but SQLAlchemy model returned `datetime`
+- Fix: Change `created_at: str` to `created_at: datetime` in `app/schemas/transaction.py`
+
+## Fix: CORS Port Mismatch (5174)
+- Frontend running on port 5174 (not 5173)
+- Backend CORS only allowed 5173
+- Fix: Add `http://localhost:5174` to all module CORS configs:
+  - `backend/modules/auth/application.properties`
+  - `backend/modules/categories/application.properties`
+  - `backend/modules/transactions/application.properties`
+- Restart backend after changing CORS
+
+## UI Styling: Add Button
+- Old: Full-width button using `.btn.btn-primary` class
+- New: Compact button with gradient, icon box, hover lift effect
+- CSS class: `.btn-add-transaction` in `frontend/src/index.css`
+- Pattern: Follow existing component patterns (e.g., CategoryForm modal)
