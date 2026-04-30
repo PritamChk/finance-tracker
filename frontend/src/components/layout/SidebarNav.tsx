@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSidebar } from '../../hooks/useSidebar';
 import { useAuthStore } from '../../stores/auth.store';
+import { useThemeStore } from '../../stores/theme.store';
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: '🏠' },
@@ -12,6 +13,7 @@ const navItems = [
 const SidebarNav: React.FC = () => {
   const { isOpen, toggle, close } = useSidebar();
   const { clearAuth } = useAuthStore();
+  const { isDark, toggle: toggleTheme } = useThemeStore();
 
   const handleLogout = () => {
     clearAuth();
@@ -45,6 +47,10 @@ const SidebarNav: React.FC = () => {
         <div className="sidebar-footer">
           <button className="sidebar-btn" onClick={toggle} title={isOpen ? 'Collapse' : 'Expand'}>
             {isOpen ? '◀' : '▶'}
+          </button>
+          <button className="sidebar-btn" onClick={toggleTheme} title="Toggle dark mode">
+            <span className="sidebar-icon">{isDark ? '☀️' : '🌙'}</span>
+            <span className="sidebar-label">{isDark ? 'Light' : 'Dark'}</span>
           </button>
           <button className="sidebar-btn sidebar-logout" onClick={handleLogout}>
             <span className="sidebar-icon">🚪</span>
