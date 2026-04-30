@@ -114,7 +114,12 @@ const TransactionList: React.FC<TransactionListProps> = ({
             className="input input-sm"
             value={queryParams.start_date || ''}
             onChange={(e) => {
-              onQueryParamsChange({ start_date: e.target.value || undefined, page: 1 });
+              const newStartDate = e.target.value || undefined;
+              let newEndDate = queryParams.end_date;
+              if (newStartDate && queryParams.end_date && newStartDate > queryParams.end_date) {
+                newEndDate = newStartDate;
+              }
+              onQueryParamsChange({ start_date: newStartDate, end_date: newEndDate, page: 1 });
             }}
             placeholder="Start date"
           />
@@ -123,8 +128,13 @@ const TransactionList: React.FC<TransactionListProps> = ({
             type="date"
             className="input input-sm"
             value={queryParams.end_date || ''}
+            min={queryParams.start_date || undefined}
             onChange={(e) => {
-              onQueryParamsChange({ end_date: e.target.value || undefined, page: 1 });
+              const newEndDate = e.target.value || undefined;
+              if (newEndDate && queryParams.start_date && newEndDate < queryParams.start_date) {
+                return;
+              }
+              onQueryParamsChange({ end_date: newEndDate, page: 1 });
             }}
             placeholder="End date"
           />
@@ -199,7 +209,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                   <td>{getCategoryName(transaction.category_id) || '-'}</td>
                   <td>{format(new Date(transaction.date), 'MMM dd, yyyy')}</td>
                   <td className={`text-right transaction-amount transaction-amount-${transaction.type}`}>
-                    {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toFixed(2)}
+                    {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
                   </td>
                   <td className="text-center">
                     <button className="btn btn-ghost btn-sm" onClick={() => onEdit(transaction)}>
