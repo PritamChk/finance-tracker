@@ -3,9 +3,9 @@ from sqlalchemy import func, extract
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from typing import List, Optional
-from app.models.transaction import Transaction
-from app.models.category import Category
-from app.schemas.analytics import (
+from analytics.app.models.transaction import Transaction
+from analytics.app.models.category import Category
+from analytics.app.schemas.analytics import (
     CategorySpending,
     MonthlyData,
     IncomeExpenseComparison,

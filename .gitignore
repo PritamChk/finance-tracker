@@ -22,9 +22,12 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+backend/.venv/
+backend/modules/*/.venv/
 
 # uv
 uv.lock
+skills-lock.json
 
 # OS files
 .DS_Store
@@ -36,6 +39,15 @@ Thumbs.db
 
 # Logs
 *.log
+backend/modules/*/log/
 
 # Temporary scripts
 update_auth.js
+
+# Build artifacts
+graphify-out/
+.agenthistory
+nul
+
+# Skills
+.agents/skills/graphify/

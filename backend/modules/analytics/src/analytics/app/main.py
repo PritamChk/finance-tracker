@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from shared.config_loader import load_config
-from app.core.logger import logger
-from app.middleware.logging import log_requests
-from app.api.analytics import router as analytics_router
+from analytics.app.core.logger import logger
+from analytics.app.middleware.logging import log_requests
+from analytics.app.api.analytics import router as analytics_router
 
 # Load configuration
 config = load_config()
@@ -12,7 +12,7 @@ config = load_config()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize DB if needed
-    from app.database import init_db
+    from analytics.app.database import init_db
     init_db()
     logger.info("Analytics Module starting up...")
     yield

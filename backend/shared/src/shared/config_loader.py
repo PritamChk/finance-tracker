@@ -25,14 +25,17 @@ class Config:
             config_path: Path to properties file.
         """
         if config_path is None:
-            # Default to application.properties in config directory
-            config_dir = Path(__file__).parent.parent / "config"
-            env = os.getenv("APP_ENV", "")
-            if env:
-                config_file = f"application-{env}.properties"
-            else:
-                config_file = "application.properties"
-            config_path = str(config_dir / config_file)
+            # Check MODULE_CONFIG env var first
+            config_path = os.getenv("MODULE_CONFIG", "")
+            if not config_path or not os.path.exists(config_path):
+                # Default to application.properties in current working directory
+                cwd = Path.cwd()
+                env = os.getenv("APP_ENV", "")
+                if env:
+                    config_file = f"application-{env}.properties"
+                else:
+                    config_file = "application.properties"
+                config_path = str(cwd / config_file)
 
         # ConfigParser requires a section header, add one if missing
         with open(config_path, "r") as f:

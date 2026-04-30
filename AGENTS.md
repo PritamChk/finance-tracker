@@ -168,6 +168,41 @@ Set correct base URL in `.env`:
 VITE_API_URL=http://localhost:8001/api
 ```
 
+## Issue: "ModuleNotFoundError: No module named 'shared'"
+### Root Cause
+Shared module had flat layout with multiple top-level modules (config_loader.py, database.py, security.py) that setuptools couldn't package. Workspace members not being installed into virtualenv.
+
+### Solution
+1. **Restructure with src-layout**: Move shared module files to `shared/src/shared/`
+2. **Fix pyproject.toml**: Add build-system, setuptools config:
+   ```toml
+   [build-system]
+   requires = ["setuptools>=68.0"]
+   build-backend = "setuptools.build_meta"
+   
+   [tool.setuptools.packages.find]
+   where = ["src"]
+   ```
+3. **Install as editable**: `uv pip install -e ./shared`
+4. **Update imports**: Change `from shared.config_loader` to work with src-layout
+5. **Fix config loader**: Use `MODULE_CONFIG` env var + cwd fallback instead of `__file__` based path
+
+## Issue: "Server starts but localhost:port not accessible / docs not loading"
+### Root Cause
+1. Server binding to `0.0.0.0` instead of `127.0.0.1` caused access issues
+2. Server process killed when bash command timed out
+3. Start script used wrong module path after src-layout restructure
+
+### Solution
+1. **Bind to localhost**: Use `--host 127.0.0.1` instead of `0.0.0.0`
+2. **Run in background**: Use `nohup ... &` or nohup pattern to prevent timeout kills
+3. **Update start script**: Change `app.main:app` to `analytics.app.main:app` for src-layout
+4. **Verify with curl**: 
+   ```bash
+   curl http://127.0.0.1:8005/health  # Should return {"status":"healthy"}
+   curl -o /dev/null -w "%{http_code}" http://127.0.0.1:8005/docs  # Should return 200
+   ```
+
 ---
 
 # Common Patterns

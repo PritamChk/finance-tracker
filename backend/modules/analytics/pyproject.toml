@@ -7,7 +7,19 @@ dependencies = [
     "uvicorn[standard]",
     "sqlalchemy",
     "pydantic",
+    "loguru",
+    "python-dateutil",
+    "shared",
 ]
+
+[dependency-groups]
+dev = []
+
+[tool.uv.sources]
+shared = { workspace = true }
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -13,6 +13,12 @@
       "skillPath": "skills/caveman-commit/SKILL.md",
       "computedHash": "76994afc39b68f4dbe098df76262b68d9928a23ee0f6aaebb11ba0e0f55bfa13"
     },
+    "graphify": {
+      "source": "howell5/willhong-skills",
+      "sourceType": "github",
+      "skillPath": "skills/graphify/SKILL.md",
+      "computedHash": "80456681e8ee5e57700fcca889a46179f81354a76559744cee8977c97d1faf66"
+    },
     "readme-i18n": {
       "source": "xixu-me/skills",
       "sourceType": "github",
