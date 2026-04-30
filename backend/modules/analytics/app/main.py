@@ -4,13 +4,14 @@ from contextlib import asynccontextmanager
 from shared.config_loader import load_config
 from app.core.logger import logger
 from app.middleware.logging import log_requests
+from app.api.analytics import router as analytics_router
 
 # Load configuration
 config = load_config()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize DB if needed (Phase 1 doesn't have models yet, but we can add it for consistency)
+    # Initialize DB if needed
     # from app.database import init_db
     # init_db()
     logger.info("Analytics Module starting up...")
@@ -35,6 +36,9 @@ app.add_middleware(
 
 # Logging Middleware
 app.middleware("http")(log_requests)
+
+# Include Routers
+app.include_router(analytics_router)
 
 @app.get("/")
 async def root():
