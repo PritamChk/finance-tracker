@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import transactionsService from '../services/transactions.service';
 import type {
   TransactionDTO,
@@ -14,6 +14,7 @@ export function useTransactions(params: TransactionQueryParams) {
     queryFn: () => transactionsService.list(params),
     enabled: !!params.user_id,
     staleTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 }
 

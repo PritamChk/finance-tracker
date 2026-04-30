@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { TransactionDTO, CreateTransactionData, TransactionQueryParams } from '../types/transaction.types';
 import { useTransactions, useCreateTransaction, useUpdateTransaction, useDeleteTransaction, useTransactionSummary } from '../hooks/useTransactions';
 import { useCategories } from '../hooks/useCategories';
@@ -28,6 +28,10 @@ const TransactionsPage: React.FC = () => {
     page: 1,
     page_size: 20,
   });
+
+  useEffect(() => {
+    setQueryParams((prev) => ({ ...prev, user_id: userId }));
+  }, [userId]);
 
   const { data: transactions, isLoading } = useTransactions(queryParams);
   const { data: summary, isLoading: summaryLoading } = useTransactionSummary(userId);
