@@ -185,45 +185,77 @@ const TransactionList: React.FC<TransactionListProps> = ({
           <p className="transaction-empty-subtext">Click "Add Transaction" to create your first one.</p>
         </div>
       ) : (
-        <div className="transaction-table-container">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Date</th>
-                <th className="text-right">Amount</th>
-                <th className="text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((transaction) => (
-                <tr key={transaction.id} className="table-row">
-                  <td>
-                    <span className={`badge badge-${transaction.type}`}>
-                      {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
-                    </span>
-                  </td>
-                  <td>{transaction.description || '-'}</td>
-                  <td>{getCategoryName(transaction.category_id) || '-'}</td>
-                  <td>{format(new Date(transaction.date), 'MMM dd, yyyy')}</td>
-                  <td className={`text-right transaction-amount transaction-amount-${transaction.type}`}>
-                    {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
-                  </td>
-                  <td className="text-center">
-                    <button className="btn btn-ghost btn-sm" onClick={() => onEdit(transaction)}>
-                      Edit
-                    </button>
-                    <button className="btn btn-ghost btn-sm btn-danger-text" onClick={() => onDelete(transaction.id)}>
-                      Delete
-                    </button>
-                  </td>
+        <>
+          <div className="transaction-table-container">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th className="text-right">Amount</th>
+                  <th className="text-center">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {items.map((transaction) => (
+                  <tr key={transaction.id} className="table-row">
+                    <td>
+                      <span className={`badge badge-${transaction.type}`}>
+                        {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
+                      </span>
+                    </td>
+                    <td>{transaction.description || '-'}</td>
+                    <td>{getCategoryName(transaction.category_id) || '-'}</td>
+                    <td>{format(new Date(transaction.date), 'MMM dd, yyyy')}</td>
+                    <td className={`text-right transaction-amount transaction-amount-${transaction.type}`}>
+                      {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
+                    </td>
+                    <td className="text-center">
+                      <button className="btn btn-ghost btn-sm" onClick={() => onEdit(transaction)}>
+                        Edit
+                      </button>
+                      <button className="btn btn-ghost btn-sm btn-danger-text" onClick={() => onDelete(transaction.id)}>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="transaction-cards">
+            {items.map((transaction) => (
+              <div key={transaction.id} className="transaction-card-mobile">
+                <div className="transaction-card-mobile-header">
+                  <span className={`badge badge-${transaction.type}`}>
+                    {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
+                  </span>
+                  <span className={`transaction-amount transaction-amount-${transaction.type}`}>
+                    {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
+                  </span>
+                </div>
+                <div className="transaction-card-mobile-body">
+                  <p className="transaction-card-mobile-description">
+                    {transaction.description || 'No description'}
+                  </p>
+                  <p className="transaction-card-mobile-date">
+                    {getCategoryName(transaction.category_id) || 'Uncategorized'} • {format(new Date(transaction.date), 'MMM dd, yyyy')}
+                  </p>
+                </div>
+                <div className="transaction-card-mobile-footer">
+                  <button className="btn btn-ghost btn-sm" onClick={() => onEdit(transaction)}>
+                    Edit
+                  </button>
+                  <button className="btn btn-ghost btn-sm btn-danger-text" onClick={() => onDelete(transaction.id)}>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {transactions && transactions.total_pages > 1 && (
