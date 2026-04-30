@@ -1,5 +1,11 @@
 # FinanceTrackerApp
 
+<!-- README-I18N:START -->
+
+**English** | [বাংলা](./README.bn.md)
+
+<!-- README-I18N:END -->
+
 <p align="center">
   <img src="https://img.shields.io/badge/React-18.3-blue?logo=react" alt="React">
   <img src="https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript" alt="TypeScript">
