@@ -38,7 +38,7 @@ class TransactionResponse(TransactionBase):
     id: int = Field(..., description="Transaction ID")
     user_id: int = Field(..., description="User ID")
     category_id: Optional[int] = Field(None, description="Category ID")
-    created_at: str = Field(..., description="Transaction creation timestamp")
+    created_at: datetime = Field(..., description="Transaction creation timestamp")
 
     class Config:
         from_attributes = True
