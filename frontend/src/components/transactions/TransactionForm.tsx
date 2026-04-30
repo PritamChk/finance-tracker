@@ -7,7 +7,7 @@ import type { CategoryDTO } from '../../types/category.types';
 
 const transactionSchema = z.object({
   type: z.enum(['income', 'expense']),
-  amount: z.number({ invalid_type_error: 'Amount is required' }).positive('Amount must be greater than 0'),
+  amount: z.number().min(0.01, 'Amount is required'),
   description: z.string().max(500, 'Description must be 500 characters or less').optional(),
   date: z.string().min(1, 'Date is required'),
   category_id: z.number().optional(),

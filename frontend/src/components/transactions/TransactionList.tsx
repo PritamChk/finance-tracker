@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { format } from 'date-fns';
 import type { TransactionDTO, PaginatedTransactions, TransactionQueryParams } from '../../types/transaction.types';
 import type { CategoryDTO } from '../../types/category.types';
-import TransactionCard from './TransactionCard';
 
 interface TransactionListProps {
   transactions: PaginatedTransactions | undefined;
