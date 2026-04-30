@@ -568,3 +568,58 @@ cd backend && uvicorn app.main:app --reload --port 8001
 - New: Compact button with gradient, icon box, hover lift effect
 - CSS class: `.btn-add-transaction` in `frontend/src/index.css`
 - Pattern: Follow existing component patterns (e.g., CategoryForm modal)
+
+---
+
+# Session Learnings: Transactions Fixes + Dark Mode
+
+## Transactions Page Sticky Footer
+- Added sticky footer with income (green) and expense (red) totals
+- Backend API accepts string dates (YYYY-MM-DD), not datetime objects
+- All currency displays use INR (₹) by default
+
+## Backend Fix: 422 Error on /summary
+- Root cause: Route ordering — FastAPI matched `/{transaction_id}` before `/summary`
+- Fix: Moved `/summary` endpoint before `/{transaction_id}` in `app/api/transactions.py`
+
+## Backend Fix: NaN in Summary
+- Root cause: Backend returned `balance`/`transaction_count`, frontend expected `net`/`count`
+- Fix: Changed backend to return `net`/`count`, added `|| 0` guards in frontend components
+
+## Currency Unification
+- Some components used USD (`en-US`), others hardcoded ₹
+- Fix: Changed all to INR via `Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' })`
+
+## Dark Mode Implementation
+- Uses CSS variable overrides with `.dark` class on `document.documentElement`
+- Toggle button in SidebarNav with ☀️/🌙 icons
+- Theme persists in localStorage, respects system color scheme preference
+- Theme store: `frontend/src/stores/theme.store.ts` with Zustand
+- Initialization: `ThemeInit` component in `main.tsx` applies dark class on initial render
+- CSS overrides in `frontend/src/index.css` using `.dark` selector
+
+## Build Fixes
+- TransactionForm.tsx: Zod amount validation invalid — replaced invalid `invalid_type_error` with `z.number().min(0.01)`
+- TransactionList.tsx: Unused TransactionCard import removed
+
+## Commit History
+- 6bbdb84: Transactions fixes (sticky footer, route ordering, currency, NaN)
+- 199fb05: Dark mode toggle with persistence
+- 648c688: Build fixes (zod schema, unused import)
+
+## Backend Running Config
+- Backend: Port 8003 (PID 23752)
+- Summary response: `{"total_income":0.0,"total_expense":0.0,"net":0.0,"count":0}`
+
+## Files Modified
+- `frontend/src/pages/TransactionsPage.tsx` - Sticky footer, INR formatting
+- `frontend/src/index.css` - Sticky footer styles, dark mode CSS overrides
+- `backend/modules/transactions/app/api/transactions.py` - Route ordering fix
+- `backend/modules/transactions/app/crud/transaction.py` - Returns net/count, date type fix
+- `frontend/src/components/transactions/TransactionSummary.tsx` - INR formatting, || 0 guard
+- `frontend/src/components/transactions/TransactionCard.tsx` - ₹ formatting, || 0 guard
+- `frontend/src/components/transactions/TransactionList.tsx` - ₹ formatting, || 0 guard, unused import removed
+- `frontend/src/stores/theme.store.ts` - Theme state management, localStorage persistence
+- `frontend/src/main.tsx` - Theme initialization on mount
+- `frontend/src/components/layout/SidebarNav.tsx` - Dark mode toggle button
+- `frontend/src/components/transactions/TransactionForm.tsx` - Fixed zod amount validation
