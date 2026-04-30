@@ -4,6 +4,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import CategoriesPage from './pages/CategoriesPage';
 import TransactionsPage from './pages/TransactionsPage';
+import { AnalyticsPage } from './pages/AnalyticsPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
 import { useAuthStore } from './stores/auth.store';
@@ -50,6 +51,16 @@ function App() {
           <ProtectedRoute>
             <MainLayout>
               <TransactionsPage />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/analytics"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <AnalyticsPage />
             </MainLayout>
           </ProtectedRoute>
         }
