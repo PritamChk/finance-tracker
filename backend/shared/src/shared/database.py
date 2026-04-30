@@ -14,13 +14,11 @@ if str(backend_root) not in sys.path:
 
 from shared.config_loader import load_config
 
-# Load config - use env var or auto-detect from calling module
+# Load config - use env var or fallback to cwd
 config_path = os.getenv("MODULE_CONFIG")
 if not config_path:
-    # Auto-detect based on caller's location
-    caller_dir = Path(__file__).parent.parent
-    module_name = Path(__file__).parent.name
-    config_path = str(caller_dir / "modules" / module_name / "application.properties")
+    # Fallback: look for application.properties in current working directory
+    config_path = str(Path.cwd() / "application.properties")
 config = load_config(config_path)
 
 # Database URL from config
