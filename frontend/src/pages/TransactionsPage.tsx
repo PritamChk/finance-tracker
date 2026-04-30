@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import type { TransactionDTO, CreateTransactionData, TransactionQueryParams } from '../types/transaction.types';
 import { useTransactions, useCreateTransaction, useUpdateTransaction, useDeleteTransaction, useTransactionSummary } from '../hooks/useTransactions';
 import { useCategories } from '../hooks/useCategories';
@@ -7,9 +7,20 @@ import TransactionList from '../components/transactions/TransactionList';
 import TransactionForm from '../components/transactions/TransactionForm';
 import TransactionSummary from '../components/transactions/TransactionSummary';
 
+const getMonthRange = () => {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), now.getMonth(), 1);
+  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  return {
+    startDate: start.toISOString().split('T')[0],
+    endDate: end.toISOString().split('T')[0],
+  };
+};
+
 const TransactionsPage: React.FC = () => {
   const { accessToken } = useAuthStore();
   const userId = accessToken ? 1 : 0;
+  const monthRange = useMemo(() => getMonthRange(), []);
 
   const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [showModal, setShowModal] = useState(false);
@@ -34,7 +45,11 @@ const TransactionsPage: React.FC = () => {
   }, [userId]);
 
   const { data: transactions, isLoading } = useTransactions(queryParams);
-  const { data: summary, isLoading: summaryLoading } = useTransactionSummary(userId);
+  const { data: summary, isLoading: summaryLoading } = useTransactionSummary(
+    userId,
+    monthRange.startDate,
+    monthRange.endDate
+  );
   const { data: categories } = useCategories(userId);
 
   const createMutation = useCreateTransaction(userId);
@@ -128,6 +143,23 @@ const TransactionsPage: React.FC = () => {
         onEdit={handleEdit}
         onDelete={handleDeleteRequest}
       />
+
+      {summary && (
+        <div className="transactions-sticky-footer">
+          <div className="sticky-footer-item">
+            <span className="sticky-footer-label">Income</span>
+            <span className="sticky-footer-value income">
+              {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(summary.total_income || 0)}
+            </span>
+          </div>
+          <div className="sticky-footer-item">
+            <span className="sticky-footer-label">Expense</span>
+            <span className="sticky-footer-value expense">
+              {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(summary.total_expense || 0)}
+            </span>
+          </div>
+        </div>
+      )}
 
       {showModal && (
         <div className="modal-overlay" onClick={handleCloseModal}>

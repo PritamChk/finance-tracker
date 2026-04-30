@@ -16,7 +16,7 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   onDelete,
 }) => {
   const isIncome = transaction.type === 'income';
-  const formattedAmount = `${isIncome ? '+' : '-'}₹${transaction.amount.toFixed(2)}`;
+  const formattedAmount = `${isIncome ? '+' : '-'}₹${(transaction.amount || 0).toFixed(2)}`;
   const formattedDate = format(new Date(transaction.date), 'MMM dd, yyyy');
 
   return (

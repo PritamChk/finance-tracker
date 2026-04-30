@@ -210,7 +210,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                     <td>{getCategoryName(transaction.category_id) || '-'}</td>
                     <td>{format(new Date(transaction.date), 'MMM dd, yyyy')}</td>
                     <td className={`text-right transaction-amount transaction-amount-${transaction.type}`}>
-                      {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
+                      {transaction.type === 'income' ? '+' : '-'}₹{(transaction.amount || 0).toFixed(2)}
                     </td>
                     <td className="text-center">
                       <button className="btn btn-ghost btn-sm" onClick={() => onEdit(transaction)}>
@@ -233,7 +233,7 @@ const TransactionList: React.FC<TransactionListProps> = ({
                     {transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
                   </span>
                   <span className={`transaction-amount transaction-amount-${transaction.type}`}>
-                    {transaction.type === 'income' ? '+' : '-'}₹{transaction.amount.toFixed(2)}
+                    {transaction.type === 'income' ? '+' : '-'}₹{(transaction.amount || 0).toFixed(2)}
                   </span>
                 </div>
                 <div className="transaction-card-mobile-body">

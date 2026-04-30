@@ -22,10 +22,10 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({ summary, isLoad
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+      currency: 'INR',
+    }).format(amount || 0);
   };
 
   const netClass = summary.net >= 0 ? 'summary-value-positive' : 'summary-value-negative';

@@ -1,12 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from datetime import date
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
-from datetime import datetime
-from shared.database import get_db
+
+from app.crud import (
+    create_transaction,
+    delete_transaction,
+    get_transaction,
+    get_transactions_by_user,
+    update_transaction,
+    get_transaction_summary,
+)
+from app.deps import get_db
 from app.schemas.transaction import (
     TransactionCreate,
     TransactionUpdate,
     TransactionResponse,
-    TransactionType,
 )
 from app.schemas.query import TransactionQueryParams
 from app.schemas.pagination import PaginatedResponse
@@ -49,6 +57,27 @@ async def create_transaction_endpoint(transaction: TransactionCreate, db: Sessio
         Created transaction.
     """
     return create_transaction(db=db, transaction=transaction)
+
+
+@router.get("/summary", response_model=dict)
+async def get_transaction_summary_endpoint(
+    user_id: int = Query(..., description="User ID"),
+    start_date: date | None = Query(None, description="Start date (YYYY-MM-DD)"),
+    end_date: date | None = Query(None, description="End date (YYYY-MM-DD)"),
+    db: Session = Depends(get_db),
+):
+    """Get transaction summary for a user.
+
+    Args:
+        user_id: User ID.
+        start_date: Optional start date.
+        end_date: Optional end date.
+        db: Database session.
+
+    Returns:
+        Summary statistics.
+    """
+    return get_transaction_summary(db, user_id, start_date, end_date)
 
 
 @router.get("/{transaction_id}", response_model=TransactionResponse)
@@ -119,24 +148,3 @@ async def delete_transaction_endpoint(transaction_id: int, db: Session = Depends
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Transaction not found",
         )
-
-
-@router.get("/summary", response_model=dict)
-async def get_transaction_summary_endpoint(
-    user_id: int = Query(..., description="User ID"),
-    start_date: datetime | None = Query(None, description="Start date"),
-    end_date: datetime | None = Query(None, description="End date"),
-    db: Session = Depends(get_db),
-):
-    """Get transaction summary for a user.
-
-    Args:
-        user_id: User ID.
-        start_date: Optional start date.
-        end_date: Optional end date.
-        db: Database session.
-
-    Returns:
-        Summary statistics.
-    """
-    return get_transaction_summary(db, user_id, start_date, end_date)

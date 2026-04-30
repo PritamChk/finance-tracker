@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from datetime import datetime
+from datetime import date, datetime
 from app.models.transaction import Transaction
 from app.schemas.transaction import TransactionCreate, TransactionUpdate
 from app.schemas.query import TransactionQueryParams
@@ -158,8 +158,8 @@ def get_transactions_paginated(
 def get_transaction_summary(
     db: Session,
     user_id: int,
-    start_date: datetime | None = None,
-    end_date: datetime | None = None,
+    start_date: date | None = None,
+    end_date: date | None = None,
 ) -> dict:
     """Get transaction summary for a user.
 
@@ -183,12 +183,12 @@ def get_transaction_summary(
 
     total_income = sum(t.amount for t in transactions if t.type == "income")
     total_expense = sum(t.amount for t in transactions if t.type == "expense")
-    balance = total_income - total_expense
+    net = total_income - total_expense
 
     return {
         "total_income": float(total_income),
         "total_expense": float(total_expense),
-        "balance": float(balance),
-        "transaction_count": len(transactions),
+        "net": float(net),
+        "count": len(transactions),
     }
 
