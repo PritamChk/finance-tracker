@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import sys
+import os
 from pathlib import Path
 
 # Add backend to path for shared imports
@@ -13,12 +14,12 @@ if str(backend_root) not in sys.path:
 
 from shared.config_loader import load_config
 
-# Load config
-config_path = backend_root / "modules" / "auth" / "application.properties"
-config = load_config(str(config_path))
+# Load config - use env var or default path
+config_path = os.getenv("TRANSACTIONS_CONFIG", str(backend_root / "modules" / "transactions" / "application.properties"))
+config = load_config(config_path)
 
 # Database URL from config
-DATABASE_URL = config.get("database.url", "sqlite:///./auth.db")
+DATABASE_URL = config.get("database.url", "sqlite:///./transactions.db")
 
 # Create engine
 engine = create_engine(
