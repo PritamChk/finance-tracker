@@ -1,0 +1,13 @@
+[project]
+name = "analytics"
+version = "0.1.0"
+description = "Financial analytics module"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy",
+    "pydantic",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
