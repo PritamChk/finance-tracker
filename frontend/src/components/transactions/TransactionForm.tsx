@@ -42,7 +42,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       type: transaction?.type || 'expense',
       amount: transaction?.amount || undefined,
       description: transaction?.description || '',
-      date: transaction?.date ? transaction.date.slice(0, 16) : new Date().toISOString().slice(0, 16),
+      date: transaction?.date ? transaction.date.slice(0, 16) : new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16),
       category_id: transaction?.category_id || undefined,
     },
   });
@@ -113,6 +113,7 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
         <input
           id="date"
           type="datetime-local"
+          max={new Date().toISOString().slice(0, 16)}
           className={`input ${errors.date ? 'input-error' : ''}`}
           {...register('date')}
         />
