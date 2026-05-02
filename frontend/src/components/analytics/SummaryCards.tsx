@@ -30,8 +30,8 @@ export function SummaryCards({ total_income, total_expense, net, isLoading }: Su
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       {cards.map(card => (
         <div key={card.label} className={`summary-card ${card.bg} ${card.border}`}>
-          <div className="text-sm text-gray-600">{card.label}</div>
-          <div className={`text-2xl font-bold ${card.color}`}>
+          <div className="text-xs text-gray-600">{card.label}</div>
+          <div className={`text-xl font-bold ${card.color}`}>
             {formatCurrency(card.value)}
           </div>
         </div>

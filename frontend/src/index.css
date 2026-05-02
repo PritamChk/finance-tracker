@@ -60,6 +60,10 @@ body {
   padding: 20px;
 }
 
+.auth-container .card {
+  max-width: 28rem;
+}
+
 .card {
   background: white;
   padding: 2rem;
@@ -67,7 +71,6 @@ body {
   box-shadow: var(--shadow);
   border: 1px solid var(--gray-200);
   width: 100%;
-  max-width: 400px;
 }
 
 .card-title {

@@ -21,36 +21,42 @@ export function IncomeExpenseChart({ data, isLoading }: IncomeExpenseChartProps)
   return (
     <div className="card" style={{ height: 400 }}>
       <h3 className="text-lg font-semibold mb-4">Income vs Expense by Month</h3>
-      <ResponsiveBar
-        data={chartData}
-        keys={['Income', 'Expense']}
-        indexBy="month"
-        margin={{ top: 20, right: 20, bottom: 50, left: 60 }}
-        padding={0.3}
-        groupMode="grouped"
-        valueScale={{ type: 'linear' }}
-        colors={['#22c55e', '#ef4444']}
-        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: -45,
-          legend: 'Month',
-          legendOffset: 36,
-          legendPosition: 'middle',
-        }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          legend: 'Amount (₹)',
-          legendOffset: -40,
-          legendPosition: 'middle',
-        }}
-        labelSkipWidth={12}
-        labelSkipHeight={12}
-        labelTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
+       <ResponsiveBar
+         data={chartData}
+         keys={['Income', 'Expense']}
+         indexBy="month"
+         margin={{ top: 20, right: 20, bottom: 50, left: 60 }}
+         padding={0.3}
+         groupMode="grouped"
+         valueScale={{ type: 'linear' }}
+         colors={['#22c55e', '#ef4444']}
+         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+         axisTop={null}
+         axisRight={null}
+         axisBottom={{
+           tickSize: 5,
+           tickPadding: 5,
+           tickRotation: -45,
+           legend: 'Month',
+           legendOffset: 36,
+           legendPosition: 'middle',
+         }}
+         axisLeft={{
+           tickSize: 5,
+           tickPadding: 5,
+           legend: 'Amount (₹)',
+           legendOffset: -40,
+           legendPosition: 'middle',
+         }}
+         labelSkipWidth={12}
+         labelSkipHeight={12}
+         labelTextColor={{ from: 'color', modifiers: [['darker', 2]] }}
+         animate={true}
+         motionConfig={{
+           mass: 1,
+           tension: 55,
+           friction: 25,
+         }}
         theme={{
           text: { fill: isDark ? '#f8fafc' : '#111827' },
           axis: { ticks: { text: { fill: isDark ? '#cbd5e1' : '#4b5563' } } },

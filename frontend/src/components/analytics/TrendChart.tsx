@@ -28,37 +28,43 @@ export function TrendChart({ data, isLoading }: TrendChartProps) {
   return (
     <div className="card" style={{ height: 400 }}>
       <h3 className="text-lg font-semibold mb-4">Monthly Income vs Expense</h3>
-      <ResponsiveLine
-        data={chartData}
-        margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: 'point' }}
-        yScale={{ type: 'linear', min: 0, max: 'auto', stacked: false }}
-        curve="monotoneX"
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: -45,
-          legend: 'Month',
-          legendOffset: 36,
-          legendPosition: 'middle',
-        }}
-        axisLeft={{
-          tickSize: 5,
-          tickPadding: 5,
-          legend: 'Amount (₹)',
-          legendOffset: -40,
-          legendPosition: 'middle',
-        }}
-        colors={['#22c55e', '#ef4444']}
-        pointSize={8}
-        pointBorderWidth={2}
-        pointBorderColor={{ from: 'serieColor' }}
-        pointLabelYOffset={-12}
-        useMesh={true}
-        enableArea={true}
-        areaOpacity={0.1}
+       <ResponsiveLine
+         data={chartData}
+         margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
+         xScale={{ type: 'point' }}
+         yScale={{ type: 'linear', min: 0, max: 'auto', stacked: false }}
+         curve="monotoneX"
+         axisTop={null}
+         axisRight={null}
+         axisBottom={{
+           tickSize: 5,
+           tickPadding: 5,
+           tickRotation: -45,
+           legend: 'Month',
+           legendOffset: 36,
+           legendPosition: 'middle',
+         }}
+         axisLeft={{
+           tickSize: 5,
+           tickPadding: 5,
+           legend: 'Amount (₹)',
+           legendOffset: -40,
+           legendPosition: 'middle',
+         }}
+         colors={['#22c55e', '#ef4444']}
+         pointSize={8}
+         pointBorderWidth={2}
+         pointBorderColor={{ from: 'serieColor' }}
+         pointLabelYOffset={-12}
+         useMesh={true}
+         enableArea={true}
+         areaOpacity={0.1}
+         animate={true}
+         motionConfig={{
+           mass: 1,
+           tension: 55,
+           friction: 25,
+         }}
         theme={{
           text: { fill: isDark ? '#f8fafc' : '#111827' },
           axis: { ticks: { text: { fill: isDark ? '#cbd5e1' : '#4b5563' } } },

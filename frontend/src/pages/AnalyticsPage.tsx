@@ -19,10 +19,11 @@ export function AnalyticsPage() {
   const { data: trend, isLoading: tLoad } = useMonthlyTrend(12);
 
   return (
-    <div className="analytics-page max-w-7xl mx-auto px-4 py-6">
-      <h1 className="text-3xl font-bold mb-6">Analytics</h1>
-
-      <DateRangeFilter value={range} onChange={setRange} isLoading={sLoad} />
+    <div className="analytics-page" style={{ width: '100%', maxWidth: 'none', padding: '1.5rem' }}>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Analytics</h1>
+        <DateRangeFilter value={range} onChange={setRange} isLoading={sLoad} />
+      </div>
 
       <SummaryCards
         total_income={summary?.total_income || 0}
@@ -31,16 +32,10 @@ export function AnalyticsPage() {
         isLoading={sLoad}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', marginTop: '1.5rem' }}>
         <SpendingChart data={categories || []} isLoading={cLoad} />
-      </div>
-
-      <div className="mb-6">
         <TrendChart data={trend} isLoading={tLoad} />
-      </div>
-
-      <div className="mb-6">
-        <IncomeExpenseChart data={trend} isLoading={tLoad} />
+        <div style={{ gridColumn: '1 / -1' }}><IncomeExpenseChart data={trend} isLoading={tLoad} /></div>
       </div>
     </div>
   );

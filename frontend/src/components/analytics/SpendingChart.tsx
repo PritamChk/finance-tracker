@@ -31,20 +31,26 @@ export function SpendingChart({ data, isLoading }: SpendingChartProps) {
   return (
     <div className="card" style={{ height: 400 }}>
       <h3 className="text-lg font-semibold mb-4">Spending by Category</h3>
-      <ResponsivePie
-        data={chartData}
-        margin={{ top: 20, right: 80, bottom: 20, left: 80 }}
-        innerRadius={0.5}
-        padAngle={0.7}
-        cornerRadius={3}
-        activeOuterRadiusOffset={8}
-        colors={(d) => d.data.color as string}
-        borderWidth={1}
-        borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
-        arcLinkLabelsSkipAngle={10}
-        arcLinkLabelsTextColor={isDark ? '#f8fafc' : '#111827'}
-        arcLinkLabelsColor={{ from: 'color' }}
-        arcLabelsTextColor={isDark ? '#f8fafc' : '#111827'}
+       <ResponsivePie
+         data={chartData}
+         margin={{ top: 20, right: 80, bottom: 20, left: 80 }}
+         innerRadius={0.5}
+         padAngle={0.7}
+         cornerRadius={3}
+         activeOuterRadiusOffset={8}
+         colors={(d) => d.data.color as string}
+         borderWidth={1}
+         borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+         arcLinkLabelsSkipAngle={10}
+         arcLinkLabelsTextColor={isDark ? '#f8fafc' : '#111827'}
+         arcLinkLabelsColor={{ from: 'color' }}
+         arcLabelsTextColor={isDark ? '#f8fafc' : '#111827'}
+         animate={true}
+         motionConfig={{
+           mass: 1,
+           tension: 55,
+           friction: 25,
+         }}
         theme={{
           text: { fill: isDark ? '#f8fafc' : '#111827' },
           tooltip: {
