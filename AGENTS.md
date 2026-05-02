@@ -963,3 +963,61 @@ Replaced all old components with redesigned versions:
 - [ ] Delete old DB files (`categories.db`, old `transactions.db`)
 - [ ] Add `PRAGMA foreign_keys=ON` to shared/database.py
 - [ ] Test user isolation with 2+ accounts
+
+---
+
+# Session Learnings: Reports Module (Frontend)
+
+## Backend API Integration
+Reports module frontend configured to integrate with backend at port 8006:
+- Base URL: `VITE_REPORTS_API_URL=http://localhost:8006` in `.env`
+- Endpoints:
+  - `GET /api/reports/transactions` - Export transactions (CSV/PDF)
+  - `GET /api/reports/category/{category_id}` - Category-wise report
+  - `GET /api/reports/summary` - Summary report
+
+## File Download Pattern
+For blob responses, use axios with `responseType: 'blob'`:
+```typescript
+const response = await api.get('/endpoint', { params, responseType: 'blob' });
+const url = window.URL.createObjectURL(new Blob([response.data]));
+const link = document.createElement('a');
+link.href = url;
+link.download = filename;
+link.click();
+```
+
+## Reports Page Flow
+1. **Select mode**: Date Range / Monthly / Yearly (toggle buttons)
+2. **Set period**:
+   - Date Range: from/to date pickers
+   - Monthly: month dropdown + year input
+   - Yearly: single year input (1970 to current year)
+3. **Click**: "Generate Report" - shows preview table with sample rows
+4. **Download**: Dropdown (CSV/PDF) + Download button below table
+
+## TypeScript Types
+```typescript
+export type ReportFormat = 'csv' | 'pdf';
+export type TransactionType = 'all' | 'income' | 'expense';
+export interface ReportQueryParams {
+  start_date?: string;
+  end_date?: string;
+  category_id?: number;
+  type?: TransactionType;
+  format?: ReportFormat;
+}
+```
+
+## Files Updated
+### Frontend
+- `.env` - Added `VITE_REPORTS_API_URL=http://localhost:8006`
+- `frontend/src/types/reports.types.ts` - Updated to match backend schema
+- `frontend/src/services/reports.service.ts` - New service with export functions
+- `frontend/src/hooks/useReports.ts` - New hooks: useExportTransactions, useExportCategoryReport, useExportSummary
+- `frontend/src/pages/ReportsPage.tsx` - Redesigned with generate → preview → download flow
+- `frontend/src/components/reports/ReportFilters.tsx` - Monthly/Yearly with single year input
+- `frontend/src/components/reports/ExportPanel.tsx` - Updated props for new flow
+
+## Build Status
+- Build passes: `tsc -b && vite build` ✅
