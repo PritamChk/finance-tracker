@@ -977,6 +977,38 @@ Replaced all old components with redesigned versions:
 
 ---
 
+# Session Learnings: Reports Module Fixes
+
+## Fix: get_current_user_id Usage Pattern
+- **Error**: `AttributeError: 'Request' object has no attribute 'credentials'`
+- **Root Cause**: Called `get_current_user_id(request)` directly instead of using FastAPI's dependency injection
+- **Pattern**: Use `Depends(get_current_user_id)` in endpoint parameters, not `get_current_user_id(request)`
+- **Correct Usage**:
+  ```python
+  @router.get("/preview")
+  async def preview_transactions(
+      current_user_id: int = Depends(get_current_user_id),
+      db: Session = Depends(get_db)
+  ):
+      # Use current_user_id directly
+  ```
+
+## Fix: Date Field Validation Error
+- **Error**: `pydantic_core._pydantic_core.ValidationError: Input should be a valid string`
+- **Root Cause**: Schema expected `str` but SQLAlchemy returned `datetime` object
+- **Fix**: Convert datetime to ISO string: `date=txn.date.isoformat() if txn.date else ""`
+
+## Fix: PDF Currency Symbol Encoding
+- **Error**: PDF showed `n79,000.00` (corrupted ₹ symbol)
+- **Root Cause**: ₹ (U+20B9) causing encoding issues in ReportLab
+- **Fix**: Changed from `₹` to `Rs.` in all PDF amounts
+
+## Files Modified
+- `backend/modules/reports/reports_app/api/reports.py` - Fixed Depends usage
+- `backend/modules/reports/reports_app/crud/reports.py` - Fixed date formatting and currency symbol
+
+---
+
 # Session Learnings: Reports Module (Frontend)
 
 ## Backend API Integration
