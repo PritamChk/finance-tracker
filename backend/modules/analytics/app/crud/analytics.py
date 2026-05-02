@@ -67,6 +67,7 @@ def get_spending_by_category(
         db.query(
             Transaction.category_id,
             Category.name.label("category_name"),
+            Category.color.label("category_color"),
             func.sum(Transaction.amount).label("total"),
         )
         .join(Category, Transaction.category_id == Category.id, isouter=True)
@@ -88,6 +89,7 @@ def get_spending_by_category(
             category_name=r.category_name or "Uncategorized",
             amount=float(r.total),
             percentage=float(r.total / total_spending * 100) if total_spending > 0 else 0,
+            category_color=r.category_color,
         )
         for r in results
     ]

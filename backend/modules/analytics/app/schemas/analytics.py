@@ -8,6 +8,7 @@ class CategorySpending(BaseModel):
     category_name: str = Field(..., description="Category name")
     amount: float = Field(..., description="Total amount spent")
     percentage: float = Field(..., description="Percentage of total spending")
+    category_color: Optional[str] = Field(None, description="Category color hex code")
 
 class MonthlyData(BaseModel):
     """Schema for monthly data."""

@@ -4,7 +4,7 @@ import type {
   AnalyticsSummaryDTO,
   CategorySpendingDTO,
   MonthlyTrendDTO,
-  IncomeVsExpenseDTO,
+  IncomeExpenseDTO,
 } from '@/types/analytics.types';
 
 const STALE_TIME = 5 * 60 * 1000;
@@ -34,7 +34,7 @@ export function useMonthlyTrend(months = 12) {
 }
 
 export function useIncomeVsExpense(start_date?: string, end_date?: string) {
-  return useQuery<IncomeVsExpenseDTO>({
+  return useQuery<IncomeExpenseDTO>({
     queryKey: ['analytics', 'income-vs-expense', start_date, end_date],
     queryFn: () => analyticsService.getIncomeVsExpense(start_date, end_date),
     staleTime: STALE_TIME,

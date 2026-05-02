@@ -1,5 +1,10 @@
 import axios from 'axios';
-import type { AnalyticsSummaryDTO, CategorySpendingDTO, MonthlyTrendDTO, IncomeVsExpenseDTO } from '@/types/analytics.types';
+import type {
+  AnalyticsSummaryDTO,
+  CategorySpendingDTO,
+  MonthlyTrendDTO,
+  IncomeExpenseDTO,
+} from '@/types/analytics.types';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_ANALYTICS_API_URL || 'http://localhost:8005',
@@ -29,7 +34,7 @@ export const analyticsService = {
     }).then(r => r.data),
 
   getIncomeVsExpense: (start_date?: string, end_date?: string) =>
-    api.get<IncomeVsExpenseDTO>('/api/analytics/income-vs-expense', {
+    api.get<IncomeExpenseDTO>('/api/analytics/income-vs-expense', {
       params: { start_date, end_date },
     }).then(r => r.data),
 };
