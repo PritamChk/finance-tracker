@@ -1,32 +1,22 @@
 import { useState } from 'react';
-import { useAuthStore } from '@/stores/auth.store';
 import { SummaryCards } from '@/components/analytics/SummaryCards';
 import { SpendingChart } from '@/components/analytics/SpendingChart';
 import { TrendChart } from '@/components/analytics/TrendChart';
 import { IncomeExpenseChart } from '@/components/analytics/IncomeExpenseChart';
 import { DateRangeFilter } from '@/components/analytics/DateRangeFilter';
-import { useAnalyticsSummary, useSpendingByCategory, useMonthlyTrend, useIncomeVsExpense } from '@/hooks/useAnalytics';
+import { useAnalyticsSummary, useSpendingByCategory, useMonthlyTrend } from '@/hooks/useAnalytics';
 import type { DateRange } from '@/types/analytics.types';
 
 export function AnalyticsPage() {
-  const accessToken = useAuthStore(s => s.accessToken);
   const [range, setRange] = useState<DateRange>({ preset: 'last6months' });
 
-  // Extract user_id from JWT payload (simplified - in production use jwt-decode)
-  const userId = accessToken
-    ? JSON.parse(atob(accessToken.split('.')[1])).sub
-    : undefined;
-
   const { data: summary, isLoading: sLoad } = useAnalyticsSummary(
-    userId, range.start_date, range.end_date
+    range.start_date, range.end_date
   );
   const { data: categories, isLoading: cLoad } = useSpendingByCategory(
-    userId, range.start_date, range.end_date
+    range.start_date, range.end_date
   );
-  const { data: trend, isLoading: tLoad } = useMonthlyTrend(userId, 12);
-  const { data: incomeExpense, isLoading: ieLoad } = useIncomeVsExpense(
-    userId, range.start_date, range.end_date
-  );
+  const { data: trend, isLoading: tLoad } = useMonthlyTrend(12);
 
   return (
     <div className="analytics-page max-w-7xl mx-auto px-4 py-6">
@@ -50,7 +40,7 @@ export function AnalyticsPage() {
       </div>
 
       <div className="mb-6">
-        <IncomeExpenseChart data={incomeExpense} isLoading={ieLoad} />
+        <IncomeExpenseChart data={trend} isLoading={tLoad} />
       </div>
     </div>
   );

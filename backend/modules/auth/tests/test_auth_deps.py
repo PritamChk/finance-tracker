@@ -3,9 +3,9 @@
 import pytest
 import asyncio
 from fastapi import HTTPException, status
-from app.core.deps import get_current_user
-from app.crud.user import create_user
-from app.schemas.user import UserCreate
+from auth_app.core.deps import get_current_user
+from auth_app.crud.user import create_user
+from auth_app.schemas.user import UserCreate
 from shared.security import create_access_token
 
 
@@ -122,7 +122,7 @@ class TestGetDbSession:
 
     def test_db_session_can_query(self, db_session):
         """Test that db session can perform queries."""
-        from app.models.user import User
+        from auth_app.models.user import User
 
         # Query should work even if empty
         users = db_session.query(User).all()
@@ -130,7 +130,7 @@ class TestGetDbSession:
 
     def test_db_session_can_add(self, db_session, test_user_data):
         """Test that db session can add records."""
-        from app.models.user import User
+        from auth_app.models.user import User
         from shared.security import get_password_hash
 
         user = User(

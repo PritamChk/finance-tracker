@@ -13,23 +13,23 @@ api.interceptors.request.use((config) => {
 });
 
 export const analyticsService = {
-  getSummary: (userId: number, start_date?: string, end_date?: string) =>
+  getSummary: (start_date?: string, end_date?: string) =>
     api.get<AnalyticsSummaryDTO>('/api/analytics/summary', {
-      params: { user_id: userId, start_date, end_date },
+      params: { start_date, end_date },
     }).then(r => r.data),
 
-  getSpendingByCategory: (userId: number, start_date?: string, end_date?: string) =>
+  getSpendingByCategory: (start_date?: string, end_date?: string) =>
     api.get<CategorySpendingDTO[]>('/api/analytics/spending-by-category', {
-      params: { user_id: userId, start_date, end_date },
+      params: { start_date, end_date },
     }).then(r => r.data),
 
-  getMonthlyTrend: (userId: number, months = 12) =>
+  getMonthlyTrend: (months = 12) =>
     api.get<MonthlyTrendDTO>('/api/analytics/monthly-trend', {
-      params: { user_id: userId, months },
+      params: { months },
     }).then(r => r.data),
 
-  getIncomeVsExpense: (userId: number, start_date?: string, end_date?: string) =>
+  getIncomeVsExpense: (start_date?: string, end_date?: string) =>
     api.get<IncomeVsExpenseDTO>('/api/analytics/income-vs-expense', {
-      params: { user_id: userId, start_date, end_date },
+      params: { start_date, end_date },
     }).then(r => r.data),
 };

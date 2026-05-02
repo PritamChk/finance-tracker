@@ -1,41 +1,53 @@
-"""Shared database configuration and utilities."""
+"""Shared database configuration for all modules."""
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from shared.config_loader import load_config
+from pathlib import Path
 import sys
 import os
-from pathlib import Path
 
-# Add backend to path for shared imports
-backend_root = Path(__file__).parent.parent
+# Add backend root to path (go up 4 levels: shared/src/shared -> backend)
+backend_root = Path(__file__).parent.parent.parent.parent
 if str(backend_root) not in sys.path:
     sys.path.insert(0, str(backend_root))
 
-from shared.config_loader import load_config
-
-# Load config - use env var or fallback to cwd
+# Load config - use MODULE_CONFIG env var, or look for application.properties in parent dirs
 config_path = os.getenv("MODULE_CONFIG")
 if not config_path:
-    # Fallback: look for application.properties in current working directory
-    config_path = str(Path.cwd() / "application.properties")
+    # Search for application.properties starting from cwd, going up to backend_root
+    cwd = Path.cwd()
+    config_path = str(cwd / "application.properties")
+    if not os.path.exists(config_path):
+        # Try going up until we find it or reach backend_root
+        for parent in [cwd] + list(cwd.parents):
+            test_path = parent / "application.properties"
+            if test_path.exists():
+                config_path = str(test_path)
+                break
+            if parent == backend_root:
+                break
+
 config = load_config(config_path)
 
-# Database URL from config
-DATABASE_URL = config.get("database.url", "sqlite:///./transactions.db")
+# Get database URL from config, default to single finance_tracker.db
+db_url = config.get("database.url", "sqlite:///database/finance_tracker.db")
 
-# Create engine
+# If relative path, make it absolute relative to backend_root
+if db_url.startswith("sqlite:///"):
+    db_file = db_url.replace("sqlite:///", "")
+    if not Path(db_file).is_absolute():
+        db_url = f"sqlite:///{(backend_root / db_file).absolute()}"
+
 engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {},
+    db_url,
+    connect_args={"check_same_thread": False} if "sqlite" in db_url else {},
+    echo=False,
 )
 
-# Create SessionLocal class
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# Create Base class for models
 Base = declarative_base()
-
 
 def get_db():
     """Get database session."""
@@ -44,7 +56,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
 
 def init_db():
     """Initialize database tables."""

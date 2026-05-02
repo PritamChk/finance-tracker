@@ -22,8 +22,8 @@ categoriesApi.interceptors.request.use(
 );
 
 const categoriesService = {
-  async list(userId: number, type?: "income" | "expense"): Promise<CategoryDTO[]> {
-    const params = new URLSearchParams({ user_id: String(userId) });
+  async list(type?: "income" | "expense"): Promise<CategoryDTO[]> {
+    const params = new URLSearchParams();
     if (type) params.append('category_type', type);
     const response = await categoriesApi.get<CategoryDTO[]>(`/api/categories?${params.toString()}`);
     return response.data;

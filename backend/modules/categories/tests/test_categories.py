@@ -7,8 +7,8 @@ if str(backend_root) not in sys.path:
 
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
-import app.database as database_module
+from categories_app.main import app
+import categories_app.database as database_module
 
 
 @pytest.fixture(scope="module", autouse=True)

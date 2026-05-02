@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func, extract
+from sqlalchemy import func, extract, case
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from typing import List, Optional
@@ -102,10 +102,10 @@ def get_monthly_trend(db: Session, user_id: int, months: int = 12) -> List[Month
             extract("year", Transaction.date).label("year"),
             extract("month", Transaction.date).label("month"),
             func.sum(
-                func.case((Transaction.type == "income", Transaction.amount), else_=0)
+                case((Transaction.type == "income", Transaction.amount), else_=0)
             ).label("income"),
             func.sum(
-                func.case((Transaction.type == "expense", Transaction.amount), else_=0)
+                case((Transaction.type == "expense", Transaction.amount), else_=0)
             ).label("expense"),
         )
         .filter(Transaction.user_id == user_id, Transaction.date >= start_date)

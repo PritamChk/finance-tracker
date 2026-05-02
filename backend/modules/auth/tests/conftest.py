@@ -20,9 +20,9 @@ from starlette.middleware.cors import CORSMiddleware
 
 # CRITICAL: Import Base and models BEFORE test engine setup
 from shared.database import Base, get_db
-from app.models.user import User
-from app.api.auth import router as auth_router
-from app.middleware.logging import log_requests
+from auth_app.models.user import User
+from auth_app.api.auth import router as auth_router
+from auth_app.middleware.logging import log_requests
 
 # In-memory test database
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -97,8 +97,8 @@ def test_user_data():
 @pytest.fixture
 def test_user(db_session, test_user_data):
     """Create a test user in database."""
-    from app.crud.user import create_user
-    from app.schemas.user import UserCreate
+    from auth_app.crud.user import create_user
+    from auth_app.schemas.user import UserCreate
 
     user_create = UserCreate(**test_user_data)
     return create_user(db=db_session, user=user_create)

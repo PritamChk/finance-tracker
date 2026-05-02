@@ -17,7 +17,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from shared.database import Base, get_db
-from app.models.transaction import Transaction as TransactionModel
+from transactions_app.models.transaction import Transaction as TransactionModel
 
 
 # Stub Category model for FK resolution
@@ -47,7 +47,7 @@ def db_session():
 @pytest.fixture(scope="function")
 def client(db_session):
     """Create test client with test database."""
-    from app.main import app
+    from transactions_app.main import app
 
     app.dependency_overrides[get_db] = lambda: db_session
 

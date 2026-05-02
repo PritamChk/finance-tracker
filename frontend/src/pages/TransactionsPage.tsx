@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { TransactionDTO, CreateTransactionData, TransactionQueryParams } from '../types/transaction.types';
 import { useTransactions, useCreateTransaction, useUpdateTransaction, useDeleteTransaction, useTransactionSummary } from '../hooks/useTransactions';
 import { useCategories } from '../hooks/useCategories';
-import { useAuthStore } from '../stores/auth.store';
 import TransactionList from '../components/transactions/TransactionList';
 import TransactionForm from '../components/transactions/TransactionForm';
 import TransactionSummary from '../components/transactions/TransactionSummary';
@@ -18,8 +17,6 @@ const getMonthRange = () => {
 };
 
 const TransactionsPage: React.FC = () => {
-  const { accessToken } = useAuthStore();
-  const userId = accessToken ? 1 : 0;
   const monthRange = useMemo(() => getMonthRange(), []);
 
   const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
@@ -28,7 +25,6 @@ const TransactionsPage: React.FC = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
 
   const [queryParams, setQueryParams] = useState<TransactionQueryParams>({
-    user_id: userId,
     transaction_type: undefined,
     category_id: undefined,
     start_date: undefined,
@@ -36,25 +32,20 @@ const TransactionsPage: React.FC = () => {
     search: undefined,
     sort_by: 'date',
     sort_order: 'desc',
-    page: 1,
+    page:1,
     page_size: 20,
   });
 
-  useEffect(() => {
-    setQueryParams((prev) => ({ ...prev, user_id: userId }));
-  }, [userId]);
-
   const { data: transactions, isLoading } = useTransactions(queryParams);
   const { data: summary, isLoading: summaryLoading } = useTransactionSummary(
-    userId,
     monthRange.startDate,
     monthRange.endDate
   );
-  const { data: categories } = useCategories(userId);
+  const { data: categories } = useCategories();
 
-  const createMutation = useCreateTransaction(userId);
-  const updateMutation = useUpdateTransaction(userId);
-  const deleteMutation = useDeleteTransaction(userId);
+  const createMutation = useCreateTransaction();
+  const updateMutation = useUpdateTransaction();
+  const deleteMutation = useDeleteTransaction();
 
   const handleQueryParamsChange = (params: Partial<TransactionQueryParams>) => {
     setQueryParams((prev) => ({ ...prev, ...params }));
@@ -169,7 +160,6 @@ const TransactionsPage: React.FC = () => {
             </h2>
             <TransactionForm
               transaction={editingTransaction}
-              userId={userId}
               categories={categories || []}
               onSubmit={editingTransaction ? handleUpdate : handleCreate}
               onCancel={handleCloseModal}

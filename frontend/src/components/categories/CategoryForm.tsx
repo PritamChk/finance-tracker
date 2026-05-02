@@ -20,13 +20,12 @@ type CategoryFormData = z.infer<typeof categorySchema>;
 
 interface CategoryFormProps {
   category?: CategoryDTO | null;
-  userId: number;
-  onSubmit: (data: { name: string; type: 'income' | 'expense'; color: string; user_id: number }) => void;
+  onSubmit: (data: { name: string; type: 'income' | 'expense'; color: string }) => void;
   onCancel: () => void;
   isLoading: boolean;
 }
 
-const CategoryForm: React.FC<CategoryFormProps> = ({ category, userId, onSubmit, onCancel, isLoading }) => {
+const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit, onCancel, isLoading }) => {
   const {
     register,
     handleSubmit,
@@ -53,7 +52,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, userId, onSubmit,
   const selectedColor = watch('color');
 
   const handleFormSubmit = (data: CategoryFormData) => {
-    onSubmit({ ...data, user_id: userId });
+    onSubmit(data);
   };
 
   return (

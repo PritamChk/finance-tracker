@@ -8,18 +8,18 @@ interface TrendChartProps {
 
 export function TrendChart({ data, isLoading }: TrendChartProps) {
   if (isLoading) return <div className="skeleton-card h-80" />;
-  if (!data?.months.length) return <div className="text-center text-gray-500 py-12">No trend data available</div>;
+  if (!data?.length) return <div className="text-center text-gray-500 py-12">No trend data available</div>;
 
   const chartData = [
     {
       id: 'Income',
       color: '#22c55e',
-      data: data.months.map(m => ({ x: m.month, y: m.income })),
+      data: data.map(m => ({ x: m.month, y: m.income })),
     },
     {
       id: 'Expense',
       color: '#ef4444',
-      data: data.months.map(m => ({ x: m.month, y: m.expense })),
+      data: data.map(m => ({ x: m.month, y: m.expense })),
     },
   ];
 

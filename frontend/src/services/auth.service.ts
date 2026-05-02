@@ -35,13 +35,6 @@ const authService = {
     return response.data;
   },
 
-  async refresh(refreshToken: string): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/auth/refresh', {
-      refresh_token: refreshToken,
-    });
-    return response.data;
-  },
-
   async getCurrentUser(): Promise<User> {
     const response = await api.get<User>('/auth/me');
     return response.data;

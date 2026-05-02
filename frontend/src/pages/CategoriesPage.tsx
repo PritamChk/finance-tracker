@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
 import type { CategoryDTO } from '../types/category.types';
 import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory } from '../hooks/useCategories';
-import { useAuthStore } from '../stores/auth.store';
 import CategoryList from '../components/categories/CategoryList';
 import CategoryForm from '../components/categories/CategoryForm';
 
 const CategoriesPage: React.FC = () => {
-  const { accessToken } = useAuthStore();
-  const userId = accessToken ? 1 : 0;
-
   const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
   const [showModal, setShowModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryDTO | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
 
-  const { data: categories, isLoading } = useCategories(userId);
-  const createMutation = useCreateCategory(userId);
-  const updateMutation = useUpdateCategory(userId);
-  const deleteMutation = useDeleteCategory(userId);
+  const { data: categories, isLoading } = useCategories();
+  const createMutation = useCreateCategory();
+  const updateMutation = useUpdateCategory();
+  const deleteMutation = useDeleteCategory();
 
-  const handleCreate = (data: { name: string; type: 'income' | 'expense'; color: string; user_id: number }) => {
+  const handleCreate = (data: { name: string; type: 'income' | 'expense'; color: string }) => {
     createMutation.mutate(data, {
       onSuccess: () => {
         setShowModal(false);
@@ -27,7 +23,7 @@ const CategoriesPage: React.FC = () => {
     });
   };
 
-  const handleUpdate = (data: { name: string; type: 'income' | 'expense'; color: string; user_id: number }) => {
+  const handleUpdate = (data: { name: string; type: 'income' | 'expense'; color: string }) => {
     if (!editingCategory) return;
     updateMutation.mutate(
       { id: editingCategory.id, data: { name: data.name, type: data.type, color: data.color } },
@@ -103,7 +99,6 @@ const CategoriesPage: React.FC = () => {
             </h2>
             <CategoryForm
               category={editingCategory}
-              userId={userId}
               onSubmit={editingCategory ? handleUpdate : handleCreate}
               onCancel={handleCloseModal}
               isLoading={createMutation.isPending || updateMutation.isPending}

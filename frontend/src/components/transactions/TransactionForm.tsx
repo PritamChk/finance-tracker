@@ -17,7 +17,6 @@ type TransactionFormData = z.infer<typeof transactionSchema>;
 
 interface TransactionFormProps {
   transaction?: TransactionDTO | null;
-  userId: number;
   categories: CategoryDTO[];
   onSubmit: (data: CreateTransactionData) => void;
   onCancel: () => void;
@@ -26,7 +25,6 @@ interface TransactionFormProps {
 
 const TransactionForm: React.FC<TransactionFormProps> = ({
   transaction,
-  userId,
   categories,
   onSubmit,
   onCancel,
@@ -58,7 +56,6 @@ const TransactionForm: React.FC<TransactionFormProps> = ({
       amount: data.amount,
       description: data.description || undefined,
       date: data.date,
-      user_id: userId,
       category_id: data.category_id,
     });
   };

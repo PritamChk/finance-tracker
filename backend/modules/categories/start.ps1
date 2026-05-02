@@ -6,4 +6,4 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $ScriptDir
 
 Write-Host "Starting Categories Module API on port $Port..." -ForegroundColor Green
-uv run uvicorn app.main:app --host 0.0.0.0 --port $Port --reload
+uv run uvicorn categories_app.main:app --host 127.0.0.1 --port $Port --reload

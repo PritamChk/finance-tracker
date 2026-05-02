@@ -21,11 +21,7 @@ export interface MonthlyTrendPointDTO {
   expense: number;
 }
 
-export interface MonthlyTrendDTO {
-  months: MonthlyTrendPointDTO[];
-  start_month: string;
-  end_month: string;
-}
+export type MonthlyTrendDTO = MonthlyTrendPointDTO[];
 
 export interface IncomeVsExpenseDTO {
   labels: string[];

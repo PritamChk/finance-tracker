@@ -2,7 +2,7 @@
 
 import pytest
 from pydantic import ValidationError
-from app.schemas.user import UserCreate, UserLogin, UserResponse, Token
+from auth_app.schemas.user import UserCreate, UserLogin, UserResponse, Token
 from datetime import datetime
 
 
@@ -205,7 +205,7 @@ class TestUserResponseSchema:
 
     def test_user_response_from_attributes(self):
         """Test UserResponse from ORM model attributes."""
-        from app.models.user import User
+        from auth_app.models.user import User
 
         user = User(
             id=1,

@@ -31,7 +31,6 @@ transactionsApi.interceptors.request.use(
 const transactionsService = {
   async list(params: TransactionQueryParams): Promise<PaginatedTransactions> {
     const searchParams = new URLSearchParams();
-    searchParams.append('user_id', String(params.user_id));
     
     if (params.transaction_type) searchParams.append('transaction_type', params.transaction_type);
     if (params.category_id) searchParams.append('category_id', String(params.category_id));
@@ -66,8 +65,8 @@ const transactionsService = {
     await transactionsApi.delete(`/api/transactions/${id}`);
   },
 
-  async getSummary(userId: number, startDate?: string, endDate?: string): Promise<TransactionSummary> {
-    const params = new URLSearchParams({ user_id: String(userId) });
+  async getSummary(startDate?: string, endDate?: string): Promise<TransactionSummary> {
+    const params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
     

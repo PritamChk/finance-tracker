@@ -1,7 +1,7 @@
 """Main application tests for auth module."""
 
 from fastapi.testclient import TestClient
-from app.main import app
+from auth_app.main import app
 
 client = TestClient(app)
 

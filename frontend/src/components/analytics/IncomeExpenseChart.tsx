@@ -1,19 +1,19 @@
 import { ResponsiveBar } from '@nivo/bar';
-import type { IncomeVsExpenseDTO } from '@/types/analytics.types';
+import type { MonthlyTrendPointDTO } from '@/types/analytics.types';
 
 interface IncomeExpenseChartProps {
-  data: IncomeVsExpenseDTO | undefined;
+  data: MonthlyTrendPointDTO[] | undefined;
   isLoading?: boolean;
 }
 
 export function IncomeExpenseChart({ data, isLoading }: IncomeExpenseChartProps) {
   if (isLoading) return <div className="skeleton-card h-80" />;
-  if (!data?.months.length) return <div className="text-center text-gray-500 py-12">No data available</div>;
+  if (!data?.length) return <div className="text-center text-gray-500 py-12">No data available</div>;
 
-  const chartData = data.months.map((month, idx) => ({
-    month,
-    Income: data.income[idx] || 0,
-    Expense: data.expense[idx] || 0,
+  const chartData = data.map(point => ({
+    month: point.month,
+    Income: point.income,
+    Expense: point.expense,
   }));
 
   const isDark = document.documentElement.classList.contains('dark');

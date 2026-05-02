@@ -658,3 +658,247 @@ cd backend && uvicorn app.main:app --reload --port 8001
 - `frontend/src/main.tsx` - Theme initialization on mount
 - `frontend/src/components/layout/SidebarNav.tsx` - Dark mode toggle button
 - `frontend/src/components/transactions/TransactionForm.tsx` - Fixed zod amount validation
+
+---
+
+# Session Learnings: User Data Isolation + DB Unification (CRITICAL)
+
+## Critical Security Issue Discovered
+**Root Cause**: All modules (except auth) accepted `user_id` from query params/request body instead of extracting from JWT token. This allowed any authenticated user to access/modify/delete other users' data.
+
+**Attack Scenario**:
+```
+GET /api/transactions?user_id=1  ← Any user could change this to see others' data
+POST /api/transactions with user_id=1 in body
+GET /api/categories/5  ← No ownership check, returns any category
+```
+
+**Victim**: New user `bom.bola@shivji.com` could see transactions of user 1 due to this flaw.
+
+## Phase 1: User Data Isolation Fix (COMPLETED)
+
+### 1.1 Centralized JWT Dependency
+- Created `backend/shared/src/shared/deps.py` with `get_current_user_id()` function
+- Extracts `user_id` from JWT `sub` claim (returns integer)
+- Used by all non-auth modules
+
+### 1.2 Backend Changes
+**Categories Module** (`backend/modules/categories/`):
+- Updated `categories_app/api/categories.py` to use `Depends(get_current_user_id)`
+- Removed `user_id` from query params and request bodies
+- Added ownership checks: `if category.user_id != current_user_id: raise 404`
+- Updated `categories_app/schemas/category.py`: Removed `user_id` from `CategoryCreate`
+- Updated `categories_app/crud/category.py`: `create_category()` now takes `user_id` parameter
+
+**Transactions Module** (`backend/modules/transactions/`):
+- Updated `transactions_app/api/transactions.py` to use JWT user_id
+- Removed `user_id` from query params (list) and request body (create)
+- Added ownership checks for single-resource endpoints (GET/PUT/DELETE /{id})
+- Updated `transactions_app/schemas/transaction.py`: Removed `user_id` from `TransactionCreate`
+- Updated `transactions_app/crud/transaction.py`: `create_transaction()` now takes `user_id`
+
+**Analytics Module** (`backend/modules/analytics/`):
+- Updated `app/api/analytics.py` to use `Depends(get_current_user_id)`
+- Removed `user_id` from all query params
+
+### 1.3 Frontend Changes
+**Services** (removed `user_id` from API calls):
+- `frontend/src/services/categories.service.ts`: `list()` no longer takes `userId`
+- `frontend/src/services/transactions.service.ts`: `list()` and `getSummary()` no longer take `userId`
+- `frontend/src/services/analytics.service.ts`: All methods no longer take `userId`
+
+**Hooks** (simplified, removed `userId` dependency):
+- `frontend/src/hooks/useCategories.ts`: Removed `userId` from all hooks
+- `frontend/src/hooks/useTransactions.ts`: Removed `userId` from all hooks and query keys
+
+**Types** (removed `user_id` fields):
+- `frontend/src/types/category.types.ts`: Removed `user_id` from `CreateCategoryData`
+- `frontend/src/types/transaction.types.ts`: Removed `user_id` from `CreateTransactionData` and `TransactionQueryParams`
+
+**Pages** (simplified, removed `userId` state):
+- `frontend/src/pages/CategoriesPage.tsx`: Removed `userId` state, updated mutations
+- `frontend/src/pages/TransactionsPage.tsx`: Removed `userId` state, updated query params
+
+**Components** (removed `userId` prop):
+- `frontend/src/components/categories/CategoryForm.tsx`: Removed `userId` prop
+- `frontend/src/components/transactions/TransactionForm.tsx`: Removed `userId` prop
+
+## Phase 2: Database Unification (COMPLETED)
+
+### 2.1 Single Database Strategy
+- **Before**: Separate DBs per module (auth used `transactions.db`, categories used `categories.db`, analytics used copy of transactions.db)
+- **After**: All modules use single `backend/database/finance_tracker.db`
+
+### 2.2 Configuration Updates
+Updated all `application.properties` files:
+- `backend/modules/auth/application.properties`: Added `database.url=sqlite:///database/finance_tracker.db`
+- `backend/modules/categories/application.properties`: Changed from `database.path=../../database/categories.db` to `database.url=sqlite:///database/finance_tracker.db`
+- `backend/modules/transactions/application.properties`: Added `database.url=sqlite:///database/finance_tracker.db`
+- `backend/modules/analytics/application.properties`: Changed to `database.url=sqlite:///database/finance_tracker.db`
+
+### 2.3 Shared Database Config
+Updated `backend/shared/src/shared/database.py`:
+- Loads `database.url` from config (default: `sqlite:///database/finance_tracker.db`)
+- Resolves relative paths to backend root directory
+- All modules import from shared instead of defining own engine
+
+### 2.4 Foreign Key Constraints (ADDED)
+Updated all models to use proper ForeignKey constraints:
+
+**Transactions** (`transactions_app/models/transaction.py`):
+```python
+user_id = Column(Integer, ForeignKey('users.id'), index=True, nullable=False)
+category_id = Column(Integer, ForeignKey('categories.id'), nullable=True)
+```
+
+**Categories** (`categories_app/models/category.py`):
+```python
+user_id = Column(Integer, ForeignKey('users.id'), index=True, nullable=False)
+```
+
+**Analytics Models** (updated copies in `analytics/app/models/`):
+- Same ForeignKey constraints added to Transaction and Category models
+
+## Database Schema (FINAL)
+```
+users table (auth module)
+├── id (PK)
+├── email (unique)
+├── hashed_password
+├── full_name
+└── created_at, updated_at
+
+categories table (categories module)
+├── id (PK)
+├── user_id (FK → users.id)
+├── name
+├── type (income/expense)
+├── color
+└── created_at, updated_at
+
+transactions table (transactions module)
+├── id (PK)
+├── user_id (FK → users.id)
+├── category_id (FK → categories.id, nullable)
+├── type (income/expense)
+├── amount
+├── description (nullable)
+├── date
+└── created_at, updated_at
+```
+
+## Security Improvements Summary
+1. ✅ **User data isolation**: Backend extracts `user_id` from JWT, not query params
+2. ✅ **Ownership checks**: Single-resource endpoints verify `resource.user_id == current_user_id`
+3. ✅ **Foreign key constraints**: Referential integrity enforced at DB level
+4. ✅ **Single database**: Eliminates data inconsistency across modules
+5. ✅ **Frontend simplified**: No need to pass `userId` around, backend handles it
+
+## Files Modified (This Session)
+### Backend
+- `backend/shared/src/shared/deps.py` - NEW: Shared JWT dependency
+- `backend/shared/src/shared/database.py` - Updated: Single DB config
+- `backend/modules/auth/application.properties` - Added DB config
+- `backend/modules/categories/application.properties` - Changed to single DB
+- `backend/modules/transactions/application.properties` - Added DB config
+- `backend/modules/analytics/application.properties` - Changed to single DB
+- `backend/modules/categories/categories_app/api/categories.py` - JWT + ownership
+- `backend/modules/categories/categories_app/schemas/category.py` - Removed user_id
+- `backend/modules/categories/categories_app/crud/category.py` - Accept user_id param
+- `backend/modules/categories/categories_app/database.py` - Use shared DB
+- `backend/modules/transactions/transactions_app/api/transactions.py` - JWT + ownership
+- `backend/modules/transactions/transactions_app/schemas/transaction.py` - Removed user_id
+- `backend/modules/transactions/transactions_app/crud/transaction.py` - Accept user_id param
+- `backend/modules/transactions/transactions_app/deps.py` - Use shared DB
+- `backend/modules/analytics/app/api/analytics.py` - JWT user_id
+- `backend/modules/transactions/transactions_app/models/transaction.py` - Added FK
+- `backend/modules/categories/categories_app/models/category.py` - Added FK
+- `backend/modules/analytics/app/models/transaction.py` - Added FK
+- `backend/modules/analytics/app/models/category.py` - Added FK
+
+### Frontend
+- `frontend/src/services/categories.service.ts` - Removed userId
+- `frontend/src/services/transactions.service.ts` - Removed userId
+- `frontend/src/services/analytics.service.ts` - Removed userId
+- `frontend/src/hooks/useCategories.ts` - Removed userId
+- `frontend/src/hooks/useTransactions.ts` - Removed userId
+- `frontend/src/types/category.types.ts` - Removed user_id
+- `frontend/src/types/transaction.types.ts` - Removed user_id
+- `frontend/src/pages/CategoriesPage.tsx` - Removed userId state
+- `frontend/src/pages/TransactionsPage.tsx` - Removed userId state
+- `frontend/src/components/categories/CategoryForm.tsx` - Removed userId prop
+- `frontend/src/components/transactions/TransactionForm.tsx` - Removed userId prop
+
+## Testing Checklist
+- [ ] New user cannot access other users' transactions
+- [ ] New user cannot access other users' categories
+- [ ] Single-resource endpoints return 404 for other users' data
+- [ ] Backend logs show `user_id` from JWT, not query params
+- [ ] Frontend no longer sends `user_id` in API calls
+- [ ] Single `finance_tracker.db` contains all tables
+- [ ] Foreign key constraints prevent orphaned records
+
+## Next Steps
+1. Run lint/typecheck on all changes
+2. Test user isolation with 2+ user accounts
+3. Verify single DB works across all modules
+4. Commit changes with descriptive message
+
+---
+
+# Session Learnings: Shared User Model + FK Resolution + Backend Fixes
+
+## User Model Moved to Shared (CRITICAL)
+- Moved `User` model to `backend/shared/src/shared/models/user.py`
+- Auth module re-exports: `from shared.models.user import User`
+- All modules import `User` from shared to resolve cross-module FK issues
+- Reason: Each module has independent `Base.metadata`, FK fails without referenced table in same metadata
+
+## Base.metadata FK Resolution Pattern
+Import all FK-referenced models in each module's `main.py`:
+- **Categories** (`categories_app/main.py`): Imports `User` from shared
+- **Transactions** (`transactions_app/main.py`): Imports `User`, `Category`, `Transaction`
+- **Analytics** (`app/main.py`): Imports `User`, `Category`, `Transaction`
+- Registers all tables in `Base.metadata` before `init_db()`
+
+## Fix: db_path → db_url in shared/database.py
+- Lines 44-45: `db_path` renamed to `db_url` (was NameError on startup)
+- Config key: `database.url` (not `database.path`)
+- All modules use `database.url=sqlite:///database/finance_tracker.db`
+
+## Fix: Shared Module Imports
+- Changed to relative imports (`.config_loader` not `shared.config_loader`)
+- Config path searches parent dirs for `application.properties`
+- `backend_root`: go up 4 levels from `shared/src/shared/`
+
+## Backend Startup Verification (COMPLETED)
+All modules start, health endpoints return `{"status":"healthy"}`:
+- Auth (8001) ✅ Categories (8002) ✅ Transactions (8003) ✅ Analytics (8005) ✅
+
+## Frontend Dev Server
+- Check: `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5173`
+- Start: `cd frontend && nohup npm run dev > /tmp/frontend.log 2>&1 &`
+- Vite tries alt port if 5173 in use (check output)
+- Build passes: `tsc -b && vite build` ✅
+- Current: Port 5174 (5173 was in use)
+
+## SQLite FK Enforcement (PENDING)
+- SQLite does not enforce FKs by default
+- Add `PRAGMA foreign_keys=ON` to `shared/database.py`
+- Use engine event listener or session config
+
+## Files Modified (Latest)
+### Backend
+- `backend/shared/src/shared/models/user.py` - NEW: Shared User model
+- `backend/modules/auth/auth_app/models/user.py` - Re-exports from shared
+- `backend/modules/categories/categories_app/main.py` - Import User
+- `backend/modules/transactions/transactions_app/main.py` - Import User, Category, Transaction
+- `backend/modules/analytics/app/main.py` - Import User, Category, Transaction
+- `backend/shared/src/shared/database.py` - Fixed db_path→db_url, relative imports
+
+### Pending
+- [ ] Migrate data from separate DBs to `finance_tracker.db`
+- [ ] Delete old DB files (`categories.db`, old `transactions.db`)
+- [ ] Add `PRAGMA foreign_keys=ON` to shared/database.py
+- [ ] Test user isolation with 2+ accounts
+- [ ] Commit all changes

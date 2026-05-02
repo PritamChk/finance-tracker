@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from shared.config_loader import load_config
+from shared.models.user import User  # noqa: F401 - registers users table
+from app.models.category import Category  # noqa: F401 - registers categories table
+from app.models.transaction import Transaction  # noqa: F401 - registers transactions table
 from app.core.logger import logger
 from app.middleware.logging import log_requests
 from app.api.analytics import router as analytics_router

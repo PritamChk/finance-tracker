@@ -1,8 +1,8 @@
 """CRUD operation tests for auth module."""
 
 import pytest
-from app.crud.user import create_user, get_user_by_email, get_user_by_id, authenticate_user
-from app.schemas.user import UserCreate
+from auth_app.crud.user import create_user, get_user_by_email, get_user_by_id, authenticate_user
+from auth_app.schemas.user import UserCreate
 
 
 class TestCreateUser:

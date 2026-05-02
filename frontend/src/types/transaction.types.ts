@@ -14,7 +14,6 @@ export interface CreateTransactionData {
   amount: number;
   description?: string;
   date: string;
-  user_id: number;
   category_id?: number;
 }
 
@@ -27,7 +26,6 @@ export interface UpdateTransactionData {
 }
 
 export interface TransactionQueryParams {
-  user_id: number;
   transaction_type?: "income" | "expense";
   category_id?: number;
   start_date?: string;
