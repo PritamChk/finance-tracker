@@ -277,18 +277,21 @@ def generate_pdf_report(
 
     # Transaction Table
     story.append(Paragraph("Transactions", styles['Heading2']))
-    txn_data = [["Date", "Category", "Type", "Amount", "Description"]]
+    txn_data = [["Date", "Time", "Category", "Type", "Amount", "Description"]]
     for txn in transactions:
         category_name = txn.category.name if txn.category else "Uncategorized"
+        date_str = str(txn.date).split()[0] if txn.date else ""
+        time_str = str(txn.date).split()[1] if txn.date and len(str(txn.date).split()) > 1 else ""
         txn_data.append([
-            str(txn.date),
+            date_str,
+            time_str,
             category_name,
             txn.type.capitalize(),
             f"Rs. {txn.amount:,.2f}",
             txn.description or ""
         ])
 
-    txn_table = Table(txn_data, colWidths=[1 * inch, 1.5 * inch, 0.8 * inch, 1 * inch, 2 * inch])
+    txn_table = Table(txn_data, colWidths=[0.9 * inch, 0.7 * inch, 1.3 * inch, 0.7 * inch, 0.9 * inch, 1.8 * inch])
     txn_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#3b82f6')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
