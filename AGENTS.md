@@ -896,9 +896,70 @@ All modules start, health endpoints return `{"status":"healthy"}`:
 - `backend/modules/analytics/app/main.py` - Import User, Category, Transaction
 - `backend/shared/src/shared/database.py` - Fixed db_path→db_url, relative imports
 
+---
+
+# Session Learnings: Analytics Page Redesign
+
+## Type Alignment (CRITICAL)
+- Frontend `analytics.types.ts` fields must match backend Pydantic schemas exactly
+- **Before**: `net`, `count` (frontend) vs `balance`, `transaction_count` (backend) → 422 errors
+- **Fix**: Updated types to match backend `FinancialSummary` and `IncomeExpenseComparison` schemas:
+  - `AnalyticsSummaryDTO`: `balance`, `transaction_count`, `average_expense`, `top_spending_category`
+  - `IncomeExpenseDTO`: `savings_rate` (added)
+  - `MonthlyTrendDTO`: Now `MonthlyDataDTO[]` with `balance` field (not `MonthlyTrendPointDTO`)
+- **Hooks + Service**: Updated `useAnalytics.ts` and `analytics.service.ts` to use correct types
+
+## Component Architecture (NEW)
+Replaced all old components with redesigned versions:
+
+| Old Component | New Component | Change |
+|---------------|---------------|--------|
+| `DualPieChart.tsx` (2 pies) | `CategoryPieChart.tsx` (1 pie) | Single pie chart, cleaner legend |
+| `TrendChart.tsx` | `MonthlyTrendChart.tsx` | Same line chart, proper types |
+| `IncomeExpenseChart.tsx` | `IncomeExpenseBar.tsx` | Same bar chart, proper types |
+| `SummaryCards.tsx` | `SummaryCards.tsx` | 5 cards (was 3): income, expense, balance, transactions, avg expense |
+| — | `SavingsRateCard.tsx` | NEW: savings rate with progress bar |
+| `DateRangeFilter.tsx` | `DateRangeFilter.tsx` | Dark mode support, design system colors |
+
+**Deleted**: `DualPieChart.tsx`, `TrendChart.tsx`, `IncomeExpenseChart.tsx`, `SpendingChart.tsx`
+
+## Page Layout Redesign
+`frontend/src/pages/AnalyticsPage.tsx` new grid:
+```
+[SummaryCards - 5 columns]
+[CategoryPieChart | SavingsRateCard + TopCategory]
+[MonthlyTrendChart - full width]
+[IncomeExpenseBar - full width]
+```
+
+## Design System + Dark Mode
+- All components use: `card` class, `text-gray-900 dark:text-gray-100`, design system colors
+- Color usage: `text-green-600 dark:text-green-400`, `text-danger-600 dark:text-danger-400`
+- Inputs: `bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600`
+- Nivo charts: `isDark` from `document.documentElement.classList.contains('dark')`
+- Tooltip bg: `isDark ? '#1f2937' : '#ffffff'`
+
+## Build Verification
+- `tsc -b && vite build` passes ✅
+- No type errors after type alignment
+- Old component imports removed (no orphan references)
+
+## Files Modified
+### Frontend
+- `frontend/src/types/analytics.types.ts` - Fixed to match backend schemas
+- `frontend/src/hooks/useAnalytics.ts` - Updated types
+- `frontend/src/services/analytics.service.ts` - Updated types
+- `frontend/src/pages/AnalyticsPage.tsx` - New layout, 5 summary cards
+- `frontend/src/components/analytics/SummaryCards.tsx` - 5 cards, design system
+- `frontend/src/components/analytics/CategoryPieChart.tsx` - NEW: single pie
+- `frontend/src/components/analytics/MonthlyTrendChart.tsx` - NEW: line chart
+- `frontend/src/components/analytics/IncomeExpenseBar.tsx` - NEW: bar chart
+- `frontend/src/components/analytics/SavingsRateCard.tsx` - NEW: savings rate
+- `frontend/src/components/analytics/DateRangeFilter.tsx` - Dark mode + design system
+- Deleted: `DualPieChart.tsx`, `TrendChart.tsx`, `IncomeExpenseChart.tsx`, `SpendingChart.tsx`
+
 ### Pending
 - [ ] Migrate data from separate DBs to `finance_tracker.db`
 - [ ] Delete old DB files (`categories.db`, old `transactions.db`)
 - [ ] Add `PRAGMA foreign_keys=ON` to shared/database.py
 - [ ] Test user isolation with 2+ accounts
-- [ ] Commit all changes
