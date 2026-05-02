@@ -1,3 +1,14 @@
+# CRITICAL RULES (READ BEFORE DOING ANYTHING)
+
+## Server Management (MANDATORY)
+**NEVER start, stop, or restart any server without explicit user permission.**
+- Always ask: "Should I start/stop/restart the {module} server?"
+- Wait for user confirmation before executing any server command
+- This applies to: backend modules (8001-8006), frontend dev server, database servers
+- Exception: Only auto-stop if user explicitly asked you to stop in that same conversation
+
+---
+
 # Project Context
 
 ## What This Is
@@ -1021,3 +1032,81 @@ export interface ReportQueryParams {
 
 ## Build Status
 - Build passes: `tsc -b && vite build` ✅
+
+---
+
+# Session Learnings: Reports Module (Backend)
+
+## Module Structure (port 8006)
+- Created `backend/modules/reports/` with full FastAPI module structure
+- Uses single DB: `backend/database/finance_tracker.db`
+- JWT-protected endpoints via shared `get_current_user_id()` dependency
+
+## Backend Architecture
+- **Entry**: `reports_app/main.py` - FastAPI app with CORS, logging middleware, lifespan
+- **API**: `reports_app/api/reports.py` - Endpoints for CSV/PDF export, category reports, preview
+- **CRUD**: `reports_app/crud/reports.py` - CSV/PDF generation logic using reportlab
+- **Models**: `reports_app/models/` - Local Transaction/Category copies with relationships
+- **Schemas**: `reports_app/schemas/reports.py` - Pydantic schemas for report responses
+- **Config**: `application.properties` - Port 8006, CORS origins
+
+## Endpoints
+- `GET /api/reports/transactions?format=csv|pdf` - Export transactions
+- `GET /api/reports/category/{category_id}?format=csv|pdf` - Category-wise report
+- `GET /api/reports/summary?format=csv|pdf` - Summary report
+- `GET /api/reports/preview` - JSON preview with pagination
+
+## Critical Fix: Transaction Model Relationship
+- **Error**: All endpoints returning 500 with `missing attribute 'category'` error
+- **Root Cause**: `Transaction` model missing `relationship("Category")` definition
+- **Fix**: Added to `reports_app/models/transaction.py`:
+  ```python
+  category = relationship("Category")
+  ```
+- **Result**: 500 errors resolved, all endpoints return 200
+
+## Report Generation Features
+- **CSV**: Header with user email, date range, generated timestamp; table with transaction details; summary totals
+- **PDF**: ReportLab-generated with header, styled table, summary section, totals
+- **Filename Pattern**: `report_YYYY-MM-DD_to_YYYY-MM-DD.{csv|pdf}`
+- **Category Reports**: Filename includes category name, shows income/expense totals + transaction count
+
+## Dependencies (pyproject.toml)
+```toml
+dependencies = [
+    "fastapi", "uvicorn[standard]", "sqlalchemy", "pydantic",
+    "loguru", "reportlab", "python-jose", "Pillow", "passlib", "bcrypt",
+    "pytest", "pytest-asyncio", "httpx"
+]
+```
+
+## Start Script Pattern
+- `start.sh`: Uses `uv run` only (no manual venv activation)
+- `start.ps1`: Windows equivalent with `uv run`
+
+## Testing Results (Post-Fix)
+- Health endpoint: ✅ `{"status":"healthy"}`
+- CSV export: ✅ 200, proper header format
+- PDF export: ✅ 200, valid PDF document (2.3KB)
+- Preview endpoint: ✅ 200, returns JSON with pagination
+- Test user: `reportstest@example.com` with JWT token
+
+## Files Created/Modified
+### Backend
+- `backend/modules/reports/reports_app/main.py` - FastAPI entry point
+- `backend/modules/reports/reports_app/api/reports.py` - JWT-protected endpoints
+- `backend/modules/reports/reports_app/crud/reports.py` - CSV/PDF generation
+- `backend/modules/reports/reports_app/models/transaction.py` - Added category relationship (FIX)
+- `backend/modules/reports/reports_app/models/category.py` - Local model copy
+- `backend/modules/reports/reports_app/schemas/reports.py` - Pydantic schemas
+- `backend/modules/reports/reports_app/core/logger.py` - Loguru config
+- `backend/modules/reports/reports_app/middleware/logging.py` - Request logging
+- `backend/modules/reports/reports_app/deps.py` - JWT dependency
+- `backend/modules/reports/application.properties` - Port 8006 config
+- `backend/modules/reports/pyproject.toml` - All dependencies
+- `backend/modules/reports/start.sh` / `start.ps1` - Start scripts
+- `backend/modules/reports/tests/test_reports.py` - Test suite
+
+---
+
+# Session Learnings: Reports Module (Frontend)
