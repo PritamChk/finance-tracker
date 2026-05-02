@@ -1,20 +1,12 @@
 import { useState } from 'react';
 import { Download } from 'lucide-react';
-import { useExportTransactions } from '@/hooks/useReports';
+import { useExportTransactions, useReportPreview } from '@/hooks/useReports';
 import type { ReportQueryParams } from '@/types/reports.types';
 
 type Mode = 'range' | 'monthly' | 'yearly';
 
 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const currentYear = new Date().getFullYear();
-
-const sampleData = [
-  { date: '2026-01-05', category: 'Salary', type: 'income', amount: 50000, description: 'Monthly salary' },
-  { date: '2026-01-10', category: 'Food', type: 'expense', amount: 500, description: 'Lunch' },
-  { date: '2026-01-15', category: 'Transport', type: 'expense', amount: 200, description: 'Bus fare' },
-  { date: '2026-01-20', category: 'Utilities', type: 'expense', amount: 1500, description: 'Electricity bill' },
-  { date: '2026-01-25', category: 'Shopping', type: 'expense', amount: 2500, description: 'Clothes' },
-];
 
 export function ReportsPage() {
   const [mode, setMode] = useState<Mode>('range');
@@ -25,9 +17,28 @@ export function ReportsPage() {
   const [generated, setGenerated] = useState(false);
   const [downloadFormat, setDownloadFormat] = useState<'csv' | 'pdf'>('csv');
 
+  const [queryParams, setQueryParams] = useState<ReportQueryParams | undefined>(undefined);
+  const previewQuery = useReportPreview(queryParams);
+
   const exportTransactions = useExportTransactions();
 
   const handleGenerate = () => {
+    const params: ReportQueryParams = {};
+
+    if (mode === 'range') {
+      params.start_date = startDate;
+      params.end_date = endDate;
+    } else if (mode === 'monthly') {
+      const start = `${year}-${String(month).padStart(2, '0')}-01`;
+      const lastDay = new Date(year, month, 0).getDate();
+      params.start_date = start;
+      params.end_date = `${year}-${String(month).padStart(2, '0')}-${lastDay}`;
+    } else {
+      params.start_date = `${year}-01-01`;
+      params.end_date = `${year}-12-31`;
+    }
+
+    setQueryParams(params);
     setGenerated(true);
   };
 
@@ -163,37 +174,47 @@ export function ReportsPage() {
             <>
               <div className="card">
                 <h3 className="card-title mb-3">Preview</h3>
-                <div className="overflow-x-auto">
-                  <table className="table table-sm">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Category</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Description</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sampleData.map((row, idx) => (
-                        <tr key={idx}>
-                          <td>{row.date}</td>
-                          <td>{row.category}</td>
-                          <td>
-                            <span className={`badge ${row.type === 'income' ? 'badge-success' : 'badge-danger'}`}>
-                              {row.type}
-                            </span>
-                          </td>
-                          <td>₹{row.amount.toLocaleString('en-IN')}</td>
-                          <td>{row.description}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  Showing 5 of ~150 transactions
-                </p>
+                {previewQuery.isLoading ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Loading preview...</p>
+                ) : previewQuery.isError ? (
+                  <p className="text-sm text-red-500 dark:text-red-400">Failed to load preview</p>
+                ) : previewQuery.data?.items.length === 0 ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">No transactions found for this period</p>
+                ) : (
+                  <>
+                    <div className="overflow-x-auto">
+                      <table className="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {previewQuery.data?.items.map((row, idx) => (
+                            <tr key={idx}>
+                              <td>{row.date}</td>
+                              <td>{row.category_name || 'Uncategorized'}</td>
+                              <td>
+                                <span className={`badge ${row.type === 'income' ? 'badge-success' : 'badge-danger'}`}>
+                                  {row.type}
+                                </span>
+                              </td>
+                              <td>₹{(row.amount || 0).toLocaleString('en-IN')}</td>
+                              <td>{row.description || '-'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                      Showing {previewQuery.data?.items.length} of {previewQuery.data?.total || 0} transactions
+                    </p>
+                  </>
+                )}
               </div>
 
               <div className="card">

@@ -1,6 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { reportsService } from '@/services/reports.service';
 import type { ReportQueryParams } from '@/types/reports.types';
+
+export function useReportPreview(params: ReportQueryParams | undefined) {
+  return useQuery({
+    queryKey: ['reportPreview', params],
+    queryFn: () => params ? reportsService.getPreview(params) : Promise.resolve({ items: [], total: 0, page: 1, page_size: 7 }),
+    enabled: !!params,
+  });
+}
 
 export function useExportTransactions() {
   return useMutation({

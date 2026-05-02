@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { ReportQueryParams, MonthlyReport, YearlyReport } from '@/types/reports.types';
+import type { ReportQueryParams, MonthlyReport, YearlyReport, TransactionExport } from '@/types/reports.types';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_REPORTS_API_URL || 'http://localhost:8006',
@@ -11,6 +11,13 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+export interface PreviewResponse {
+  items: TransactionExport[];
+  total: number;
+  page: number;
+  page_size: number;
+}
 
 const getFilename = (defaultName: string, contentDisposition?: string): string => {
   if (contentDisposition) {
@@ -35,6 +42,11 @@ const downloadBlob = (response: unknown, defaultFilename: string) => {
 };
 
 export const reportsService = {
+  getPreview: async (params: ReportQueryParams): Promise<PreviewResponse> => {
+    const response = await api.get<PreviewResponse>('/api/reports/preview', { params });
+    return response.data;
+  },
+
   exportTransactions: async (params: ReportQueryParams) => {
     const response = await api.get('/api/reports/transactions', {
       params,

@@ -234,9 +234,9 @@ def generate_pdf_report(
 
     story.append(Paragraph("Summary", styles['Heading2']))
     summary_data = [
-        ["Total Income", f"₹{total_income:,.2f}"],
-        ["Total Expense", f"₹{total_expense:,.2f}"],
-        ["Net Balance", f"₹{net_balance:,.2f}"],
+        ["Total Income", f"Rs. {total_income:,.2f}"],
+        ["Total Expense", f"Rs. {total_expense:,.2f}"],
+        ["Net Balance", f"Rs. {net_balance:,.2f}"],
         ["Transaction Count", str(len(transactions))]
     ]
     summary_table = Table(summary_data, colWidths=[2.5 * inch, 2 * inch])
@@ -257,9 +257,9 @@ def generate_pdf_report(
         cat_data = [["Category", "Type", "Total", "Transactions"]]
         for cat in category_summary:
             if cat.total_income > 0:
-                cat_data.append([cat.category_name, "Income", f"₹{cat.total_income:,.2f}", str(cat.transaction_count)])
+                cat_data.append([cat.category_name, "Income", f"Rs. {cat.total_income:,.2f}", str(cat.transaction_count)])
             if cat.total_expense > 0:
-                cat_data.append([cat.category_name, "Expense", f"₹{cat.total_expense:,.2f}", str(cat.transaction_count)])
+                cat_data.append([cat.category_name, "Expense", f"Rs. {cat.total_expense:,.2f}", str(cat.transaction_count)])
 
         cat_table = Table(cat_data, colWidths=[1.5 * inch, 1 * inch, 1.5 * inch, 1 * inch])
         cat_table.setStyle(TableStyle([
@@ -281,10 +281,10 @@ def generate_pdf_report(
     for txn in transactions:
         category_name = txn.category.name if txn.category else "Uncategorized"
         txn_data.append([
-            txn.date,
+            str(txn.date),
             category_name,
             txn.type.capitalize(),
-            f"₹{txn.amount:,.2f}",
+            f"Rs. {txn.amount:,.2f}",
             txn.description or ""
         ])
 
